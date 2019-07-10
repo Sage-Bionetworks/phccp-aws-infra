@@ -1,0 +1,204 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Parameters: 
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: >-
+      Name of an existing EC2 KeyPair to enable SSH access to the instance
+  TagKey:
+    Type: String
+    Description: >-
+      Key of a tag that will be used to mark target deployment EC2 instances 
+  TagValue:
+    Type: String
+    Description: >-
+      Value of a tag that will be used to mark target deployment EC2 instances 
+  ApplicationName:
+    Type: String
+    Description: >-
+      Code Deploy Application Name
+
+Resources:
+  PhccpServiceUser:
+    Type: 'AWS::IAM::User'
+  PhccpServiceUserAccessKey:
+    Type: 'AWS::IAM::AccessKey'
+    Properties:
+      UserName: !Ref PhccpServiceUser
+
+  CreateDeploymentRole:	
+    Type: 'AWS::IAM::Role'	
+    Properties:	
+      AssumeRolePolicyDocument:	
+        Version: '2012-10-17'	
+        Statement:	
+        - Effect: Allow	
+          Action:	
+          - sts:AssumeRole	
+          Principal:	
+            AWS:	
+              - !Ref PhccpServiceUser
+  CreateDeploymentRolePolicy:	
+    Type: "AWS::IAM::Policy"	
+    Properties:	
+      PolicyName: "batch-interaction"	
+      PolicyDocument:	
+        Version: "2012-10-17"	
+        Statement:	
+        - Effect: Allow	
+          Action:	
+          - codedeploy:CreateDeployment
+          Resource:	
+          - "arn:aws:codedeploy:us-east-1:055273631518:deploymentgroup:phccp-autodeploy/phccp-autodeploy-group"	
+        - Effect: Allow	
+          Action:	
+          - codedeploy:GetDeploymentConfig
+          Resource:	
+          - "arn:aws:codedeploy:us-east-1:055273631518:deploymentconfig:CodeDeployDefault.AllAtOnce"	
+        - Effect: Allow	
+          Action:	
+          - codedeploy:GetApplicationRevision
+          Resource:	
+          - "arn:aws:codedeploy:us-east-1:055273631518:application:phccp-autodeploy/phccp-autodeploy"	
+      Roles:	
+        -	
+          !Ref CreateDeploymentRole
+# IAM resources
+  CodeDeployEC2Role:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforAWSCodeDeploy'
+      Path: /
+  CodeDeployEC2RoleInstanceProfile:
+    Type: 'AWS::IAM::InstanceProfile'
+    Properties:
+      Path: /
+      Roles:
+        - !Ref CodeDeployEC2Role
+  CodeDeployServiceRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - codedeploy.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole'
+      Path: /
+# EC2 related resurces
+  PHCCPSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH, HTTP, HTTPS
+      SecurityGroupIngress:
+      - CidrIp: 0.0.0.0/0
+        FromPort: 22
+        IpProtocol: tcp
+        ToPort: 22
+      - CidrIp: 0.0.0.0/0
+        FromPort: 80
+        IpProtocol: tcp
+        ToPort: 80
+      - CidrIp: 0.0.0.0/0
+        FromPort: 433
+        IpProtocol: tcp
+        ToPort: 433
+  PHCCPEC2Instance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: ami-030dbca661d402413
+      InstanceType: t2.micro
+      Monitoring: 'true'
+      DisableApiTermination: 'false'
+      IamInstanceProfile: !Ref CodeDeployEC2RoleInstanceProfile
+      SecurityGroupIds:
+        - !Ref PHCCPSecurityGroup
+      KeyName: !Ref KeyName
+      Tags: 
+      - 
+        Key: !Ref TagKey
+        Value: !Ref TagValue
+      UserData:
+        # install CodeDeploy agent, Docker and Docker-compose
+        Fn::Base64:
+          !Sub |
+              #!/bin/bash -ex
+              sudo yum update -y;
+              sudo yum install ruby -y;
+              sudo yum install wget -y;
+              sudo yum install docker -y;
+              sudo wget https://aws-codedeploy-eu-west-1.s3.eu-west-1.amazonaws.com/latest/install;
+              sudo chmod +x ./install;
+              sudo ./install auto;
+              sudo service docker start;
+              sudo usermod -a -G docker ec2-user;
+              sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose;
+              sudo chmod +x /usr/local/bin/docker-compose;       
+# CodeDeploy resources
+  CodeDeployApplication:
+    Type: AWS::CodeDeploy::Application
+    Properties:
+      ApplicationName: 
+      - !Ref ApplicationName
+      ComputePlatform: Server
+  DeploymentGroup: 
+    Type: AWS::CodeDeploy::DeploymentGroup
+    Properties: 
+      ApplicationName: !Ref CodeDeployApplication
+      DeploymentConfigName: CodeDeployDefault.AllAtOnce
+      Ec2TagFilters: 
+        - 
+          Key: !Ref TagKey
+          Value: !Ref TagValue
+          Type: "KEY_AND_VALUE"
+    Deployment: 
+      Description: "Phccp github deploy"
+      IgnoreApplicationStopFailures: true
+        Revision: 
+          RevisionType: GitHub
+          GitHubLocation: 
+            CommitId: 
+              Ref: 563adedb730ee7743ae6482bb68a668562ab2050
+            Repository: 
+              Ref: Sagebionetworks-phccp-codedeploy
+      ServiceRoleArn: 
+        Fn::GetAtt: [ CodeDeployServiceRole, Arn ]
+# # Secrets
+  #   DockerRegistrySecret:
+  #   Type: 'AWS::SecretsManager::Secret'
+  #   Properties:
+  #     SecretString: '{"username":"DockerUsername","password":"Docker-Password"}'
+  # DockerSecretResourcePolicy: 
+  #   Type: AWS::SecretsManager::ResourcePolicy
+  #   Properties:
+  #     SecretId: !Ref DockerRegistrySecret 
+  #     ResourcePolicy: 
+  #       Version: "2012-10-17" 
+  #       Statement: 
+  #         -
+  #           Effect: "Allow"
+  #           Principal: 
+  #             AWS: 
+  #               - !Ref PhccpServiceUser            
+  #           Action: "secretsmanager:GetSecretValue" 
+  #           Resource: "*"
+Outputs:
+  DeploymentApplication:
+    Value: !Ref CodeDeployApplication
+    Description: Name of CodeDeploy application to be used for deployments
+  DeploymentGroup:
+    Value: !Ref DeploymentGroup
+    Description: Name of DeploymentGroup application to be used for deployments      

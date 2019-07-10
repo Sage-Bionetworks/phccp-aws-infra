@@ -1,0 +1,13 @@
+template_path: code_deploy.yaml
+stack_name: codedeploy
+parameters:
+
+  Department: "CompOnc"
+  Project: "genie"
+  OwnerEmail: "thomas.yu@sagebase.org"
+
+  KeyName: "phccp-autodeploy"
+  TagKey: "Name"
+  TagValue: "phc-cp"
+  ApplicationName: "phccp-autodeploy"
+  DeploymentGroup: "phccp-autodeploy-group"
