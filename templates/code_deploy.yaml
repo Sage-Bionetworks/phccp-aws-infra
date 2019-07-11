@@ -125,6 +125,9 @@ Resources:
       # template uploaded from Sage-Bionetworks/aws-infra repo
       TemplateURL: 'https://s3.amazonaws.com/bootstrap-awss3cloudformationbucket-19qromfd235z9/aws-infra/v0.0.7/managed-alb-https.yaml'
       Parameters:
+        Department: !Ref Department
+        Project: !Ref Project
+        OwnerEmail: !Ref OwnerEmail
         #sandcastle vpc
         VpcId: vpc-0e9b80dc470a797d5
         #public subnets
@@ -138,6 +141,7 @@ Resources:
     Properties:
       ApplicationName: !Ref ApplicationName
       ComputePlatform: Server
+
   DeploymentGroup:
     Type: AWS::CodeDeploy::DeploymentGroup
     Properties:
