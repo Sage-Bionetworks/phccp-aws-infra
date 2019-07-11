@@ -76,19 +76,6 @@ Resources:
         - 'arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole'
       Path: /
 # EC2 related resurces
-  # PHCCPSecurityGroup:
-  #   Type: AWS::EC2::SecurityGroup
-  #   Properties:
-  #     GroupDescription: Enable SSH, HTTP, HTTPS
-  #     SecurityGroupIngress:
-  #     - CidrIp: 0.0.0.0/0
-  #       FromPort: 80
-  #       IpProtocol: tcp
-  #       ToPort: 80
-  #     - CidrIp: 0.0.0.0/0
-  #       FromPort: 433
-  #       IpProtocol: tcp
-  #       ToPort: 433
   PHCCPEC2Instance:
     Type: 'AWS::EC2::Instance'
     Properties:
@@ -97,8 +84,6 @@ Resources:
       Monitoring: True
       DisableApiTermination: False
       IamInstanceProfile: !Ref CodeDeployEC2RoleInstanceProfile
-      # SecurityGroupIds:
-      #   - !Ref PHCCPSecurityGroup
       KeyName: !Ref KeyName
       Tags:
       - Key: !Ref TagKey
@@ -156,8 +141,7 @@ Resources:
       ApplicationName: !Ref CodeDeployApplication
       DeploymentGroupName: !Ref DeploymentGroupName
       DeploymentConfigName: CodeDeployDefault.AllAtOnce
-      DeploymentStyle:
-        DeploymentOption: WITH_TRAFFIC_CONTROL
+
       Ec2TagFilters:
         - Key: !Ref TagKey
           Value: !Ref TagValue
@@ -171,10 +155,13 @@ Resources:
       #       Repository: !Ref GithubRepository
       #       CommitId: !Ref GithubCommit
       ServiceRoleArn: !GetAtt CodeDeployServiceRole.Arn
-      LoadBalancerInfo:
-        ElbInfoList:
-          - Name: !GetAtt CodeDeployLoadBalancer.Outputs.LoadBalancerName
-
+      # DeploymentStyle:
+      #   DeploymentOption: WITH_TRAFFIC_CONTROL
+      # LoadBalancerInfo:
+      #   ElbInfoList:
+      #     - Name: !GetAtt CodeDeployLoadBalancer.Outputs.LoadBalancerName
+      #   TargetGroupInfoList:
+      #     - Name: 
       # Tags:
       #   - Key: "Name"
       #     Value: !Ref 'AWS::StackName'
