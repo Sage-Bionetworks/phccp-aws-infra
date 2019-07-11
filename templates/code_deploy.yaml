@@ -1,87 +1,45 @@
 AWSTemplateFormatVersion: 2010-09-09
 Parameters:
+  Department:
+    Description: 'The department for this resource'
+    Type: String
+    AllowedPattern: '^\S*$'
+    ConstraintDescription: 'Must be string with no spaces'
+  Project:
+    Description: 'The name of the project that this resource is used for'
+    Type: String
+    AllowedPattern: '^\S*$'
+    ConstraintDescription: 'Must be string with no spaces'
+  OwnerEmail:
+    Description: 'Email address of the owner of this resource'
+    Type: String
+    AllowedPattern: '^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$'
+    ConstraintDescription: 'Must be an acceptable email address syntax(i.e. joe.smith@sagebase.org)'
   KeyName:
     Type: AWS::EC2::KeyPair::KeyName
-    Description: >-
-      Name of an existing EC2 KeyPair to enable SSH access to the instance
+    Description: "Name of an existing EC2 KeyPair to enable SSH access to the instance"
   TagKey:
     Type: String
-    Description: >-
-      Key of a tag that will be used to mark target deployment EC2 instances
+    Description: "Key of a tag that will be used to mark target deployment EC2 instances"
   TagValue:
     Type: String
-    Description: >-
-      Value of a tag that will be used to mark target deployment EC2 instances
+    Description: "Value of a tag that will be used to mark target deployment EC2 instances"
   ApplicationName:
     Type: String
-    Description: >-
-      Code Deploy Application Name
+    Description: "Code Deploy Application Name"
   DeploymentGroupName:
     Type: String
-    Description: >-
-      Code Deploy Deployment group
+    Description: "Code Deploy Deployment group"
   GithubCommit:
     Type: String
-    Description: >-
-      Github repository commit
+    Description: "Github repository commit"
   GithubRepository:
     Type: String
-    Description: >-
-      Github repository
-
+    Description: "Github repository"
+  SSLCertificateIdArn:
+    Type: String
+    Description: "SSL certificate Arn"
 Resources:
-  PhccpServiceUser:
-    Type: 'AWS::IAM::User'
-  PhccpServiceUserAccessKey:
-    Type: 'AWS::IAM::AccessKey'
-    Properties:
-      UserName: !Ref PhccpServiceUser
-
-  CreateDeploymentRole:
-    Type: 'AWS::IAM::Role'
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-        - Effect: Allow
-          Action:
-          - sts:AssumeRole
-          Principal:
-            AWS:
-              - !Ref PhccpServiceUser
-  CreateDeploymentRolePolicy:
-    Type: "AWS::IAM::Policy"
-    Properties:
-      PolicyName: "create-codedeploy-deployment"
-      PolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-        - Effect: Allow
-          Action:
-          - codedeploy:CreateDeployment
-          Resource: 
-          - !Join
-            - ''
-            - - "arn:aws:codedeploy:us-east-1:055273631518:deploymentgroup:"
-              - !Ref ApplicationName
-              - "/"
-              - !Ref DeploymentGroupName
-        - Effect: Allow
-          Action:
-          - codedeploy:GetDeploymentConfig
-          Resource: 
-          - "arn:aws:codedeploy:us-east-1:055273631518:deploymentconfig:CodeDeployDefault.AllAtOnce"
-        - Effect: Allow
-          Action:
-          - codedeploy:GetApplicationRevision
-          Resource: 
-          - !Join
-            - ''
-            - - "arn:aws:codedeploy:us-east-1:055273631518:application:"
-              - !Ref ApplicationName
-      Roles:
-        -
-          !Ref CreateDeploymentRole
 # IAM resources
   CodeDeployEC2Role:
     Type: 'AWS::IAM::Role'
@@ -118,33 +76,32 @@ Resources:
         - 'arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole'
       Path: /
 # EC2 related resurces
-  PHCCPSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Enable SSH, HTTP, HTTPS
-      SecurityGroupIngress:
-      - CidrIp: 0.0.0.0/0
-        FromPort: 80
-        IpProtocol: tcp
-        ToPort: 80
-      - CidrIp: 0.0.0.0/0
-        FromPort: 433
-        IpProtocol: tcp
-        ToPort: 433
+  # PHCCPSecurityGroup:
+  #   Type: AWS::EC2::SecurityGroup
+  #   Properties:
+  #     GroupDescription: Enable SSH, HTTP, HTTPS
+  #     SecurityGroupIngress:
+  #     - CidrIp: 0.0.0.0/0
+  #       FromPort: 80
+  #       IpProtocol: tcp
+  #       ToPort: 80
+  #     - CidrIp: 0.0.0.0/0
+  #       FromPort: 433
+  #       IpProtocol: tcp
+  #       ToPort: 433
   PHCCPEC2Instance:
     Type: 'AWS::EC2::Instance'
     Properties:
-      ImageId: ami-030dbca661d402413
+      ImageId: ami-0c6b1d09930fac512
       InstanceType: t2.micro
       Monitoring: True
       DisableApiTermination: False
       IamInstanceProfile: !Ref CodeDeployEC2RoleInstanceProfile
-      SecurityGroupIds:
-        - !Ref PHCCPSecurityGroup
+      # SecurityGroupIds:
+      #   - !Ref PHCCPSecurityGroup
       KeyName: !Ref KeyName
       Tags:
-      -
-        Key: !Ref TagKey
+      - Key: !Ref TagKey
         Value: !Ref TagValue
       UserData:
         # install CodeDeploy agent, Docker and Docker-compose
@@ -161,6 +118,20 @@ Resources:
           sudo usermod -a -G docker ec2-user;
           sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose;
           sudo chmod +x /usr/local/bin/docker-compose;
+
+  CodeDeployLoadBalancer:
+    Type: 'AWS::CloudFormation::Stack'
+    Properties:
+      # template uploaded from Sage-Bionetworks/aws-infra repo
+      TemplateURL: 'https://s3.amazonaws.com/bootstrap-awss3cloudformationbucket-19qromfd235z9/aws-infra/v0.0.7/managed-alb-https.yaml'
+      Parameters:
+        #sandcastle vpc
+        VpcId: vpc-0e9b80dc470a797d5
+        #public subnets
+        Subnets: "subnet-02f2acd15e5be53cd,subnet-031359c53fce9b312,subnet-0f19d4c62f9ab0f2c"
+        Ec2InstanceId: !Ref PHCCPEC2Instance
+        SSLCertificateIdArn: !Ref SSLCertificateIdArn
+
 # CodeDeploy resources
   CodeDeployApplication:
     Type: AWS::CodeDeploy::Application
@@ -173,21 +144,37 @@ Resources:
       ApplicationName: !Ref CodeDeployApplication
       DeploymentGroupName: !Ref DeploymentGroupName
       DeploymentConfigName: CodeDeployDefault.AllAtOnce
+      DeploymentStyle:
+        DeploymentOption: WITH_TRAFFIC_CONTROL
       Ec2TagFilters:
-        -
-          Key: !Ref TagKey
+        - Key: !Ref TagKey
           Value: !Ref TagValue
           Type: "KEY_AND_VALUE"
-      Deployment:
-        Description: "Phccp github deploy"
-        IgnoreApplicationStopFailures: true
-        Revision:
-          RevisionType: GitHub
-          GitHubLocation:
-            Repository: !Ref GithubRepository
-            CommitId: !Ref GithubCommit
-      ServiceRoleArn:
-        Fn::GetAtt: [ CodeDeployServiceRole, Arn ]
+      # Deployment:
+      #   Description: "Phccp github deploy"
+      #   IgnoreApplicationStopFailures: true
+      #   Revision:
+      #     RevisionType: GitHub
+      #     GitHubLocation:
+      #       Repository: !Ref GithubRepository
+      #       CommitId: !Ref GithubCommit
+      ServiceRoleArn: !GetAtt CodeDeployServiceRole.Arn
+      LoadBalancerInfo:
+        ElbInfoList:
+          - Name: !GetAtt CodeDeployLoadBalancer.Outputs.LoadBalancerArn
+          # - Name: !ImportValue
+          #     'Fn::Sub': '${AWS::Region}-${CodeDeployLoadBalancer}-LoadBalancerArn'
+
+      # Tags:
+      #   - Key: "Name"
+      #     Value: !Ref 'AWS::StackName'
+      #   - Key: "Department"
+      #     Value: !Ref Department
+      #   - Key: "Project"
+      #     Value: !Ref Project
+      #   - Key: "OwnerEmail"
+      #     Value: !Ref OwnerEmail
+
 # # Secrets
   #   DockerRegistrySecret:
   #   Type: 'AWS::SecretsManager::Secret'
@@ -207,10 +194,49 @@ Resources:
   #               - !Ref PhccpServiceUser
   #           Action: "secretsmanager:GetSecretValue"
   #           Resource: "*"
+  PhccpServiceUser:
+    Type: 'AWS::IAM::User'
+    Properties:
+      Policies:
+      - PolicyName: "create-codedeploy-deployment"
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+          - Effect: Allow
+            Action:
+            - codedeploy:CreateDeployment
+            Resource:
+            - "*"
+            # - !Join
+            #   - ''
+            #   - - "arn:aws:codedeploy:us-east-1:055273631518:deploymentgroup:"
+            #     - !Ref ApplicationName
+            #     - "/"
+            #     - !Ref DeploymentGroupName
+          - Effect: Allow
+            Action:
+            - codedeploy:GetDeploymentConfig
+            Resource:
+            - "*"
+            # - "arn:aws:codedeploy:us-east-1:055273631518:deploymentconfig:CodeDeployDefault.AllAtOnce"
+          - Effect: Allow
+            Action:
+            - codedeploy:GetApplicationRevision
+            Resource:
+            - "*"
+            # - !Join
+            #   - ''
+            #   - - "arn:aws:codedeploy:us-east-1:055273631518:application:"
+            #     - !Ref ApplicationName
+
+  PhccpServiceUserAccessKey:
+    Type: 'AWS::IAM::AccessKey'
+    Properties:
+      UserName: !Ref PhccpServiceUser
 Outputs:
   DeploymentApplication:
     Value: !Ref CodeDeployApplication
     Description: Name of CodeDeploy application to be used for deployments
-  DeploymentGroup:
-    Value: !Ref DeploymentGroup
-    Description: Name of DeploymentGroup application to be used for deployments
+  # DeploymentGroup:
+  #   Value: !Ref DeploymentGroup
+  #   Description: Name of DeploymentGroup application to be used for deployments

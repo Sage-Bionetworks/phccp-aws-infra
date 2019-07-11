@@ -3,7 +3,7 @@ stack_name: codedeploy
 parameters:
 
   Department: "CompOnc"
-  Project: "genie"
+  Project: "phccp"
   OwnerEmail: "thomas.yu@sagebase.org"
 
   KeyName: "phccp-autodeploy"
@@ -13,3 +13,4 @@ parameters:
   DeploymentGroupName: "phccp-autodeploy-group"
   GithubCommit: "563adedb730ee7743ae6482bb68a668562ab2050"
   GithubRepository: "Sage-Bionetworks/phccp-codedeploy"
+  SSLCertificateIdArn: "arn:aws:acm:us-east-1:563295687221:certificate/1a81b2e5-531b-4e3b-a81a-5af69ecdd602"
