@@ -16,6 +16,18 @@ Parameters:
     Type: String
     Description: >-
       Code Deploy Application Name
+  DeploymentGroupName:
+    Type: String
+    Description: >-
+      Code Deploy Deployment group
+  GithubCommit:
+    Type: String
+    Description: >-
+      Github repository commit
+  GithubRepository:
+    Type: String
+    Description: >-
+      Github repository
 
 Resources:
   PhccpServiceUser:
@@ -40,25 +52,33 @@ Resources:
   CreateDeploymentRolePolicy:
     Type: "AWS::IAM::Policy"
     Properties:
-      PolicyName: "batch-interaction"
+      PolicyName: "create-codedeploy-deployment"
       PolicyDocument:
         Version: "2012-10-17"
         Statement:
         - Effect: Allow
           Action:
           - codedeploy:CreateDeployment
-          Resource:
-          - "arn:aws:codedeploy:us-east-1:055273631518:deploymentgroup:phccp-autodeploy/phccp-autodeploy-group"
+          Resource: 
+          - !Join
+            - ''
+            - - "arn:aws:codedeploy:us-east-1:055273631518:deploymentgroup:"
+              - !Ref ApplicationName
+              - "/"
+              - !Ref DeploymentGroupName
         - Effect: Allow
           Action:
           - codedeploy:GetDeploymentConfig
-          Resource:
+          Resource: 
           - "arn:aws:codedeploy:us-east-1:055273631518:deploymentconfig:CodeDeployDefault.AllAtOnce"
         - Effect: Allow
           Action:
           - codedeploy:GetApplicationRevision
-          Resource:
-          - "arn:aws:codedeploy:us-east-1:055273631518:application:phccp-autodeploy/phccp-autodeploy"
+          Resource: 
+          - !Join
+            - ''
+            - - "arn:aws:codedeploy:us-east-1:055273631518:application:"
+              - !Ref ApplicationName
       Roles:
         -
           !Ref CreateDeploymentRole
@@ -116,8 +136,8 @@ Resources:
     Properties:
       ImageId: ami-030dbca661d402413
       InstanceType: t2.micro
-      Monitoring: 'true'
-      DisableApiTermination: 'false'
+      Monitoring: True
+      DisableApiTermination: False
       IamInstanceProfile: !Ref CodeDeployEC2RoleInstanceProfile
       SecurityGroupIds:
         - !Ref PHCCPSecurityGroup
@@ -129,46 +149,43 @@ Resources:
       UserData:
         # install CodeDeploy agent, Docker and Docker-compose
         Fn::Base64:
-          !Sub |
-              #!/bin/bash -ex
-              sudo yum update -y;
-              sudo yum install ruby -y;
-              sudo yum install wget -y;
-              sudo yum install docker -y;
-              sudo wget https://aws-codedeploy-eu-west-1.s3.eu-west-1.amazonaws.com/latest/install;
-              sudo chmod +x ./install;
-              sudo ./install auto;
-              sudo service docker start;
-              sudo usermod -a -G docker ec2-user;
-              sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose;
-              sudo chmod +x /usr/local/bin/docker-compose;
+          #!/bin/bash -ex
+          sudo yum update -y;
+          sudo yum install ruby -y;
+          sudo yum install wget -y;
+          sudo yum install docker -y;
+          sudo wget https://aws-codedeploy-eu-west-1.s3.eu-west-1.amazonaws.com/latest/install;
+          sudo chmod +x ./install;
+          sudo ./install auto;
+          sudo service docker start;
+          sudo usermod -a -G docker ec2-user;
+          sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose;
+          sudo chmod +x /usr/local/bin/docker-compose;
 # CodeDeploy resources
   CodeDeployApplication:
     Type: AWS::CodeDeploy::Application
     Properties:
-      ApplicationName:
-      - !Ref ApplicationName
+      ApplicationName: !Ref ApplicationName
       ComputePlatform: Server
   DeploymentGroup:
     Type: AWS::CodeDeploy::DeploymentGroup
     Properties:
       ApplicationName: !Ref CodeDeployApplication
+      DeploymentGroupName: !Ref DeploymentGroupName
       DeploymentConfigName: CodeDeployDefault.AllAtOnce
       Ec2TagFilters:
         -
           Key: !Ref TagKey
           Value: !Ref TagValue
           Type: "KEY_AND_VALUE"
-    Deployment:
-      Description: "Phccp github deploy"
-      IgnoreApplicationStopFailures: true
-      Revision:
-        RevisionType: GitHub
-        GitHubLocation:
-          CommitId:
-            Ref: 563adedb730ee7743ae6482bb68a668562ab2050
-          Repository:
-            Ref: Sagebionetworks/phccp-codedeploy
+      Deployment:
+        Description: "Phccp github deploy"
+        IgnoreApplicationStopFailures: true
+        Revision:
+          RevisionType: GitHub
+          GitHubLocation:
+            Repository: !Ref GithubRepository
+            CommitId: !Ref GithubCommit
       ServiceRoleArn:
         Fn::GetAtt: [ CodeDeployServiceRole, Arn ]
 # # Secrets

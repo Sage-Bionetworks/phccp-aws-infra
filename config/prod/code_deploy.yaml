@@ -10,4 +10,6 @@ parameters:
   TagKey: "Name"
   TagValue: "phc-cp"
   ApplicationName: "phccp-autodeploy"
-  DeploymentGroup: "phccp-autodeploy-group"
+  DeploymentGroupName: "phccp-autodeploy-group"
+  GithubCommit: "563adedb730ee7743ae6482bb68a668562ab2050"
+  GithubRepository: "Sage-Bionetworks/phccp-codedeploy"
