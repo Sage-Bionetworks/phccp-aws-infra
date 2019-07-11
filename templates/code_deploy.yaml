@@ -173,9 +173,7 @@ Resources:
       ServiceRoleArn: !GetAtt CodeDeployServiceRole.Arn
       LoadBalancerInfo:
         ElbInfoList:
-          - Name: !GetAtt CodeDeployLoadBalancer.Outputs.LoadBalancerArn
-          # - Name: !ImportValue
-          #     'Fn::Sub': '${AWS::Region}-${CodeDeployLoadBalancer}-LoadBalancerArn'
+          - Name: !GetAtt CodeDeployLoadBalancer.Outputs.LoadBalancerName
 
       # Tags:
       #   - Key: "Name"
