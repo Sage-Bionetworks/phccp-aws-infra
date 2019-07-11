@@ -111,7 +111,7 @@ Resources:
           sudo yum install ruby -y;
           sudo yum install wget -y;
           sudo yum install docker -y;
-          sudo wget https://aws-codedeploy-eu-west-1.s3.eu-west-1.amazonaws.com/latest/install;
+          sudo wget https://aws-codedeploy-us-east-1.s3.eu-west-1.amazonaws.com/latest/install;
           sudo chmod +x ./install;
           sudo ./install auto;
           sudo service docker start;
