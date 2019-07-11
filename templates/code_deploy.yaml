@@ -118,7 +118,14 @@ Resources:
           sudo usermod -a -G docker ec2-user;
           sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose;
           sudo chmod +x /usr/local/bin/docker-compose;
-
+      NetworkInterfaces:
+        - DeleteOnTermination: true
+          DeviceIndex: "0"
+          GroupSet:
+            - !ImportValue
+              'Fn::Sub': 'us-east-1-sandcastlevpc-VpnSecurityGroup'
+          SubnetId: !ImportValue
+            'Fn::Sub': 'us-east-1-sandcastlevpc-PrivateSubnet'
   CodeDeployLoadBalancer:
     Type: 'AWS::CloudFormation::Stack'
     Properties:
