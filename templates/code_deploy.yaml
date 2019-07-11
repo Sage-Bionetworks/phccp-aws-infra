@@ -111,7 +111,7 @@ Resources:
           sudo yum install ruby -y;
           sudo yum install wget -y;
           sudo yum install docker -y;
-          sudo wget https://aws-codedeploy-us-east-1.s3.eu-west-1.amazonaws.com/latest/install;
+          sudo wget https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install;
           sudo chmod +x ./install;
           sudo ./install auto;
           sudo service docker start;
@@ -123,7 +123,7 @@ Resources:
     Type: 'AWS::CloudFormation::Stack'
     Properties:
       # template uploaded from Sage-Bionetworks/aws-infra repo
-      TemplateURL: 'https://s3.amazonaws.com/bootstrap-awss3cloudformationbucket-19qromfd235z9/aws-infra/v0.0.7/managed-alb-https.yaml'
+      TemplateURL: 'https://s3.amazonaws.com/bootstrap-awss3cloudformationbucket-19qromfd235z9/aws-infra/master/managed-alb-https.yaml'
       Parameters:
         Department: !Ref Department
         Project: !Ref Project
