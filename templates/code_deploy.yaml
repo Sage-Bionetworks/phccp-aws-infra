@@ -30,12 +30,12 @@ Parameters:
   DeploymentGroupName:
     Type: String
     Description: "Code Deploy Deployment group"
-  GithubCommit:
-    Type: String
-    Description: "Github repository commit"
-  GithubRepository:
-    Type: String
-    Description: "Github repository"
+  # GithubCommit:
+  #   Type: String
+  #   Description: "Github repository commit"
+  # GithubRepository:
+  #   Type: String
+  #   Description: "Github repository"
   SSLCertificateIdArn:
     Type: String
     Description: "SSL certificate Arn"
