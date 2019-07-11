@@ -134,6 +134,7 @@ Resources:
         Subnets: "subnet-02f2acd15e5be53cd,subnet-031359c53fce9b312,subnet-0f19d4c62f9ab0f2c"
         Ec2InstanceId: !Ref PHCCPEC2Instance
         SSLCertificateIdArn: !Ref SSLCertificateIdArn
+        AppPort: "80"
 
 # CodeDeploy resources
   CodeDeployApplication:
@@ -241,6 +242,6 @@ Outputs:
   DeploymentApplication:
     Value: !Ref CodeDeployApplication
     Description: Name of CodeDeploy application to be used for deployments
-  # DeploymentGroup:
-  #   Value: !Ref DeploymentGroup
-  #   Description: Name of DeploymentGroup application to be used for deployments
+  DeploymentGroup:
+    Value: !Ref DeploymentGroup
+    Description: Name of DeploymentGroup application to be used for deployments
