@@ -75,7 +75,7 @@ Resources:
       ManagedPolicyArns:
         - 'arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole'
       Path: /
-# EC2 related resurces
+# # EC2 related resurces
   PHCCPEC2Instance:
     Type: 'AWS::EC2::Instance'
     Properties:
@@ -112,22 +112,22 @@ Resources:
               sudo chmod +x /usr/local/bin/docker-compose;
 
 
-  CodeDeployLoadBalancer:
-    Type: 'AWS::CloudFormation::Stack'
-    Properties:
-      # template uploaded from Sage-Bionetworks/aws-infra repo
-      TemplateURL: 'https://s3.amazonaws.com/bootstrap-awss3cloudformationbucket-19qromfd235z9/aws-infra/master/managed-alb-https.yaml'
-      Parameters:
-        Department: !Ref Department
-        Project: !Ref Project
-        OwnerEmail: !Ref OwnerEmail
-        #sandcastle vpc
-        VpcId: vpc-0e9b80dc470a797d5
-        #public subnets
-        Subnets: "subnet-02f2acd15e5be53cd,subnet-031359c53fce9b312,subnet-0f19d4c62f9ab0f2c"
-        Ec2InstanceId: !Ref PHCCPEC2Instance
-        SSLCertificateIdArn: !Ref SSLCertificateIdArn
-        AppPort: "80"
+  # CodeDeployLoadBalancer:
+  #   Type: 'AWS::CloudFormation::Stack'
+  #   Properties:
+  #     # template uploaded from Sage-Bionetworks/aws-infra repo
+  #     TemplateURL: 'https://s3.amazonaws.com/bootstrap-awss3cloudformationbucket-19qromfd235z9/aws-infra/master/managed-alb-https.yaml'
+  #     Parameters:
+  #       Department: !Ref Department
+  #       Project: !Ref Project
+  #       OwnerEmail: !Ref OwnerEmail
+  #       #sandcastle vpc
+  #       VpcId: vpc-0e9b80dc470a797d5
+  #       #public subnets
+  #       Subnets: "subnet-02f2acd15e5be53cd,subnet-031359c53fce9b312,subnet-0f19d4c62f9ab0f2c"
+  #       Ec2InstanceId: !Ref PHCCPEC2Instance
+  #       SSLCertificateIdArn: !Ref SSLCertificateIdArn
+  #       AppPort: "80"
 
 # CodeDeploy resources
   CodeDeployApplication:
