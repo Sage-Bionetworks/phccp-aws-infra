@@ -75,20 +75,7 @@ Resources:
       ManagedPolicyArns:
         - 'arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole'
       Path: /
-# EC2 related resurces
-  PHCCPSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Enable SSH, HTTP, HTTPS
-      SecurityGroupIngress:
-      - CidrIp: 0.0.0.0/0
-        FromPort: 80
-        IpProtocol: tcp
-        ToPort: 80
-      - CidrIp: 0.0.0.0/0
-        FromPort: 433
-        IpProtocol: tcp
-        ToPort: 433
+# # EC2 related resurces
   PHCCPEC2Instance:
     Type: 'AWS::EC2::Instance'
     Properties:
@@ -101,8 +88,6 @@ Resources:
       Tags:
       - Key: !Ref TagKey
         Value: !Ref TagValue
-      SecurityGroupIds:
-        - !Ref PHCCPSecurityGroup
       NetworkInterfaces:
       - DeleteOnTermination: true
         DeviceIndex: "0"
