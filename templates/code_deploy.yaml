@@ -75,7 +75,30 @@ Resources:
       ManagedPolicyArns:
         - 'arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole'
       Path: /
+
+
 # # EC2 related resurces
+  InstanceSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: "Open a port for incoming traffic"
+      VpcId: !ImportValue 'us-east-1-sandcastlevpc-VPCId'
+      SecurityGroupIngress:
+        - CidrIp: "0.0.0.0/0"
+          FromPort: 80
+          ToPort: 80
+          IpProtocol: tcp
+        - CidrIp: "0.0.0.0/0"
+          FromPort: 443
+          ToPort: 443
+          IpProtocol: tcp
+      SecurityGroupEgress:
+        - CidrIp: "0.0.0.0/0"
+          FromPort: -1
+          ToPort: -1
+          IpProtocol: "-1"
+
+
   PHCCPEC2Instance:
     Type: 'AWS::EC2::Instance'
     Properties:
@@ -93,6 +116,7 @@ Resources:
         DeviceIndex: "0"
         GroupSet:
         - !ImportValue 'us-east-1-sandcastlevpc-VpnSecurityGroup'
+        - !GetAtt InstanceSecurityGroup.GroupId
         SubnetId: !ImportValue 'us-east-1-sandcastlevpc-PrivateSubnet'
       UserData:
         # install CodeDeploy agent, Docker and Docker-compose
@@ -112,22 +136,22 @@ Resources:
               sudo chmod +x /usr/local/bin/docker-compose;
 
 
-  # CodeDeployLoadBalancer:
-  #   Type: 'AWS::CloudFormation::Stack'
-  #   Properties:
-  #     # template uploaded from Sage-Bionetworks/aws-infra repo
-  #     TemplateURL: 'https://s3.amazonaws.com/bootstrap-awss3cloudformationbucket-19qromfd235z9/aws-infra/master/managed-alb-https.yaml'
-  #     Parameters:
-  #       Department: !Ref Department
-  #       Project: !Ref Project
-  #       OwnerEmail: !Ref OwnerEmail
-  #       #sandcastle vpc
-  #       VpcId: vpc-0e9b80dc470a797d5
-  #       #public subnets
-  #       Subnets: "subnet-02f2acd15e5be53cd,subnet-031359c53fce9b312,subnet-0f19d4c62f9ab0f2c"
-  #       Ec2InstanceId: !Ref PHCCPEC2Instance
-  #       SSLCertificateIdArn: !Ref SSLCertificateIdArn
-  #       AppPort: "80"
+  CodeDeployLoadBalancer:
+    Type: 'AWS::CloudFormation::Stack'
+    Properties:
+      # template uploaded from Sage-Bionetworks/aws-infra repo
+      TemplateURL: 'https://s3.amazonaws.com/bootstrap-awss3cloudformationbucket-19qromfd235z9/aws-infra/master/managed-alb-https.yaml'
+      Parameters:
+        Department: !Ref Department
+        Project: !Ref Project
+        OwnerEmail: !Ref OwnerEmail
+        #sandcastle vpc
+        VpcId: vpc-0e9b80dc470a797d5
+        #public subnets
+        Subnets: "subnet-02f2acd15e5be53cd,subnet-031359c53fce9b312,subnet-0f19d4c62f9ab0f2c"
+        Ec2InstanceId: !Ref PHCCPEC2Instance
+        SSLCertificateIdArn: !Ref SSLCertificateIdArn
+        AppPort: "80"
 
 # CodeDeploy resources
   CodeDeployApplication:
@@ -142,7 +166,10 @@ Resources:
       ApplicationName: !Ref CodeDeployApplication
       DeploymentGroupName: !Ref DeploymentGroupName
       DeploymentConfigName: CodeDeployDefault.AllAtOnce
-
+      ServiceRoleArn: !GetAtt CodeDeployServiceRole.Arn
+      DeploymentStyle:
+        DeploymentOption: WITH_TRAFFIC_CONTROL
+        DeploymentType: IN_PLACE
       Ec2TagFilters:
         - Key: !Ref TagKey
           Value: !Ref TagValue
@@ -155,23 +182,10 @@ Resources:
       #     GitHubLocation:
       #       Repository: !Ref GithubRepository
       #       CommitId: !Ref GithubCommit
-      ServiceRoleArn: !GetAtt CodeDeployServiceRole.Arn
-      # DeploymentStyle:
-      #   DeploymentOption: WITH_TRAFFIC_CONTROL
-      # LoadBalancerInfo:
-      #   ElbInfoList:
-      #     - Name: !GetAtt CodeDeployLoadBalancer.Outputs.LoadBalancerName
-      #   TargetGroupInfoList:
-      #     - Name: 
-      # Tags:
-      #   - Key: "Name"
-      #     Value: !Ref 'AWS::StackName'
-      #   - Key: "Department"
-      #     Value: !Ref Department
-      #   - Key: "Project"
-      #     Value: !Ref Project
-      #   - Key: "OwnerEmail"
-      #     Value: !Ref OwnerEmail
+      LoadBalancerInfo:
+        TargetGroupInfoList:
+          - Name: !GetAtt CodeDeployLoadBalancer.Outputs.ElbTargetGroupName
+
 
 # # Secrets
   #   DockerRegistrySecret:
@@ -226,11 +240,10 @@ Resources:
             #   - ''
             #   - - "arn:aws:codedeploy:us-east-1:055273631518:application:"
             #     - !Ref ApplicationName
-
-  PhccpServiceUserAccessKey:
-    Type: 'AWS::IAM::AccessKey'
-    Properties:
-      UserName: !Ref PhccpServiceUser
+ PhccpServiceUserAccessKey:
+  Type: 'AWS::IAM::AccessKey'
+  Properties:
+    UserName: !Ref PhccpServiceUser
 Outputs:
   DeploymentApplication:
     Value: !Ref CodeDeployApplication
