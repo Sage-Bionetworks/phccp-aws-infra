@@ -97,18 +97,19 @@ Resources:
       UserData:
         # install CodeDeploy agent, Docker and Docker-compose
         Fn::Base64:
-          #!/bin/bash -ex
-          sudo yum update -y;
-          sudo yum install ruby -y;
-          sudo yum install wget -y;
-          sudo yum install docker -y;
-          sudo wget https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install;
-          sudo chmod +x ./install;
-          sudo ./install auto;
-          sudo service docker start;
-          sudo usermod -a -G docker ec2-user;
-          sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose;
-          sudo chmod +x /usr/local/bin/docker-compose;
+          !Sub |
+              #!/bin/bash -ex
+              sudo yum update -y;
+              sudo yum install ruby -y;
+              sudo yum install wget -y;
+              sudo yum install docker -y;
+              sudo wget https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install;
+              sudo chmod +x ./install;
+              sudo ./install auto;
+              sudo service docker start;
+              sudo usermod -a -G docker ec2-user;
+              sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose;
+              sudo chmod +x /usr/local/bin/docker-compose;
 
 
   CodeDeployLoadBalancer:
