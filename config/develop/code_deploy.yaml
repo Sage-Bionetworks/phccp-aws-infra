@@ -1,7 +1,7 @@
 template_path: code_deploy.yaml
 stack_name: phc-codedeploy
 dependencies:
-  - develop/code_deloy_essentials.yaml
+  - develop/code_deploy_essentials.yaml
 parameters:
 
   Department: "CompOnc"
