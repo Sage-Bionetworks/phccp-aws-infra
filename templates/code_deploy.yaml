@@ -33,28 +33,13 @@ Parameters:
   SSLCertificateIdArn:
     Type: String
     Description: "SSL certificate Arn"
+  CodeDeployEC2RoleInstanceProfile:
+    Type: String
+    Description: "Code Deploy EC2 Role"
+
 Resources:
 # IAM resources
-  # CodeDeployEC2Role:
-  #   Type: 'AWS::IAM::Role'
-  #   Properties:
-  #     AssumeRolePolicyDocument:
-  #       Statement:
-  #         - Effect: Allow
-  #           Principal:
-  #             Service:
-  #               - ec2.amazonaws.com
-  #           Action:
-  #             - 'sts:AssumeRole'
-  #     ManagedPolicyArns:
-  #       - 'arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforAWSCodeDeploy'
-  #     Path: /
-  CodeDeployEC2RoleInstanceProfile:
-    Type: 'AWS::IAM::InstanceProfile'
-    Properties:
-      Path: /
-      Roles:
-        - !Ref CodeDeployEC2Role
+
   CodeDeployServiceRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -69,7 +54,6 @@ Resources:
       ManagedPolicyArns:
         - 'arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole'
       Path: /
-
 
 # # EC2 related resurces
   InstanceSecurityGroup:
@@ -92,41 +76,6 @@ Resources:
           ToPort: -1
           IpProtocol: "-1"
 
-  # CodeDeployS3Bucket:
-  #   Type: AWS::S3::Bucket
-  # BucketPolicy:
-  #   Type: AWS::S3::BucketPolicy
-  #   Properties:
-  #     PolicyDocument:
-  #       Id: MyPolicy
-  #       Version: 2012-10-17
-  #       Statement:
-  #         - Sid: AllowCodeDeployFromEC2Role
-  #           Effect: Allow
-  #           Principal:
-  #             AWS:
-  #               - Fn::GetAtt: [ CodeDeployEC2Role, Arn ]
-  #           Action:
-  #             - s3:Get*
-  #             - s3:List*
-  #           Resource: !Join
-  #             - ''
-  #             - - 'arn:aws:s3:::'
-  #               - !Ref CodeDeployS3Bucket
-  #               - /*
-  #         - Sid: AllowPutFromDeployUser
-  #           Effect: Allow
-  #           Principal:
-  #             AWS:
-  #               - !Ref DeployUserArn
-  #           Action:
-  #             - s3:PutObject
-  #           Resource: !Join
-  #             - ''
-  #             - - 'arn:aws:s3:::'
-  #               - !Ref CodeDeployS3Bucket
-  #               - /*
-  #     Bucket: !Ref CodeDeployS3Bucket
 
   PHCCPEC2Instance:
     Type: 'AWS::EC2::Instance'

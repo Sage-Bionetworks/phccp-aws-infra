@@ -122,10 +122,19 @@ Resources:
                 - /*
       Bucket: !Ref CodeDeployS3Bucket
 
-
+  CodeDeployEC2RoleInstanceProfile:
+    Type: 'AWS::IAM::InstanceProfile'
+    Properties:
+      Path: /
+      Roles:
+        - !Ref CodeDeployEC2Role
 Outputs:
   CodeDeployS3Bucket:
     Value: !Ref CodeDeployS3Bucket
     Description: Name of S3 bucket to be used for deployments
     Export:
       Name: !Sub '${AWS::Region}-${AWS::StackName}-CodeDeployS3Bucket'
+  CodeDeployEC2RoleInstanceProfile:
+    Value: !Ref CodeDeployEC2RoleInstanceProfile
+    Description: Code deploy ec2 role instance profile
+
