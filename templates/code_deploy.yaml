@@ -30,12 +30,6 @@ Parameters:
   DeploymentGroupName:
     Type: String
     Description: "Code Deploy Deployment group"
-  GithubCommit:
-    Type: String
-    Description: "Github repository commit"
-  GithubRepository:
-    Type: String
-    Description: "Github repository"
   SSLCertificateIdArn:
     Type: String
     Description: "SSL certificate Arn"
@@ -98,6 +92,41 @@ Resources:
           ToPort: -1
           IpProtocol: "-1"
 
+  CodeDeployS3Bucket:
+    Type: AWS::S3::Bucket
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      PolicyDocument:
+        Id: MyPolicy
+        Version: 2012-10-17
+        Statement:
+          - Sid: AllowCodeDeployFromEC2Role
+            Effect: Allow
+            Principal:
+              AWS:
+                - Fn::GetAtt: [ CodeDeployEC2Role, Arn ]
+            Action:
+              - s3:Get*
+              - s3:List*
+            Resource: !Join
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref CodeDeployS3Bucket
+                - /*
+          - Sid: AllowPutFromDeployUser
+            Effect: Allow
+            Principal:
+              AWS:
+                - !Ref DeployUserArn
+            Action:
+              - s3:PutObject
+            Resource: !Join
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref CodeDeployS3Bucket
+                - /*
+      Bucket: !Ref CodeDeployS3Bucket
 
   PHCCPEC2Instance:
     Type: 'AWS::EC2::Instance'
@@ -173,14 +202,14 @@ Resources:
         - Key: !Ref TagKey
           Value: !Ref TagValue
           Type: "KEY_AND_VALUE"
-      Deployment:
-        Description: "Phccp github deploy"
-        IgnoreApplicationStopFailures: true
-        Revision:
-          RevisionType: GitHub
-          GitHubLocation:
-            Repository: !Ref GithubRepository
-            CommitId: !Ref GithubCommit
+      # Deployment:
+      #   Description: "Phccp github deploy"
+      #   IgnoreApplicationStopFailures: true
+      #   Revision:
+      #     RevisionType: S3
+      #     S3Location:
+      #       Bucket: !Ref CodeDeployS3Bucket
+      #       Key:
       LoadBalancerInfo:
         TargetGroupInfoList:
           - Name: !GetAtt CodeDeployLoadBalancer.Outputs.ElbTargetGroupName
@@ -244,6 +273,9 @@ Resources:
     Properties:
       UserName: !Ref PhccpServiceUser
 Outputs:
+  DeploymentBucket:
+    Value: !Ref CodeDeployS3Bucket
+    Description: Name of S3 bucket to be used for deployments
   DeploymentApplication:
     Value: !Ref CodeDeployApplication
     Description: Name of CodeDeploy application to be used for deployments
