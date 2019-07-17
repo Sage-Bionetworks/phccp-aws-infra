@@ -67,7 +67,7 @@ Resources:
           - !Ref AWS::StackName
           - '/InfraKey'
       TargetKeyId: !Ref AWSKmsInfraKey
-  
+
   CodeDeployEC2Role:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -137,4 +137,3 @@ Outputs:
   CodeDeployEC2RoleInstanceProfile:
     Value: !Ref CodeDeployEC2RoleInstanceProfile
     Description: Code deploy ec2 role instance profile
-
