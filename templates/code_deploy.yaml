@@ -30,12 +30,12 @@ Parameters:
   DeploymentGroupName:
     Type: String
     Description: "Code Deploy Deployment group"
-  # GithubCommit:
-  #   Type: String
-  #   Description: "Github repository commit"
-  # GithubRepository:
-  #   Type: String
-  #   Description: "Github repository"
+  GithubCommit:
+    Type: String
+    Description: "Github repository commit"
+  GithubRepository:
+    Type: String
+    Description: "Github repository"
   SSLCertificateIdArn:
     Type: String
     Description: "SSL certificate Arn"
@@ -173,14 +173,14 @@ Resources:
         - Key: !Ref TagKey
           Value: !Ref TagValue
           Type: "KEY_AND_VALUE"
-      # Deployment:
-      #   Description: "Phccp github deploy"
-      #   IgnoreApplicationStopFailures: true
-      #   Revision:
-      #     RevisionType: GitHub
-      #     GitHubLocation:
-      #       Repository: !Ref GithubRepository
-      #       CommitId: !Ref GithubCommit
+      Deployment:
+        Description: "Phccp github deploy"
+        IgnoreApplicationStopFailures: true
+        Revision:
+          RevisionType: GitHub
+          GitHubLocation:
+            Repository: !Ref GithubRepository
+            CommitId: !Ref GithubCommit
       LoadBalancerInfo:
         TargetGroupInfoList:
           - Name: !GetAtt CodeDeployLoadBalancer.Outputs.ElbTargetGroupName
