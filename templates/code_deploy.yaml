@@ -281,7 +281,7 @@ Outputs:
   DeploymentGroup:
     Value: !Ref DeploymentGroup
     Description: Name of DeploymentGroup application to be used for deployments
-      Export:
+    Export:
       Name: !Sub '${AWS::Region}-${AWS::StackName}-DeploymentGroup'
   PhccpServiceUserSecretAccessKey:
     Value: !GetAtt PhccpServiceUserAccessKey.SecretAccessKey
