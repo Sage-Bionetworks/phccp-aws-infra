@@ -11,6 +11,4 @@ parameters:
   TagValue: "phc-cp"
   ApplicationName: "phccp-autodeploy"
   DeploymentGroupName: "phccp-autodeploy-group"
-  GithubCommit: "f571ace5a8acd5359cf99cac88dc9547d5454e32"
-  GithubRepository: "Sage-Bionetworks/phccp-codedeploy"
   SSLCertificateIdArn: "arn:aws:acm:us-east-1:563295687221:certificate/1a81b2e5-531b-4e3b-a81a-5af69ecdd602"
