@@ -1,0 +1,10 @@
+version: 0.0
+os: linux
+files:
+  - source: docker-compose.yml
+    destination: /tmp
+hooks:
+  AfterInstall:
+    - location: deploy.sh 
+      timeout: 300
+      runas: root

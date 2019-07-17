@@ -1,0 +1,80 @@
+version: '3.2'
+
+services:
+  phccp:
+    image: docker.synapse.org/syn18489221/phc-collaboration-portal:develop
+    # If docker.synapse.org/syn18489221/phc-collaboration-portal:develop does not work
+    # use docker.synapse.org/syn18489221/phc-collaboration-portal:develop-manual
+    container_name: phccp
+    ports:
+        - 443:443
+    environment:
+        NODE_ENV: production
+        PORT: 443
+        DOMAIN: https://dev.phc.sagesandbox.org
+        APP_INIT_ADMIN_EMAIL: thomas.schaffter@sagebase.org
+        APP_INIT_ADMIN_PASSWORD: admin
+        MONGODB_URI: mongodb://mongo-prod:27017/phccp
+        MONGODB_USER: app
+        MONGODB_PASSWORD: app123
+        MONGODB_SSL: 'true'
+        MONGODB_SSL_VALIDATE: 'false'  # Set to false when using self-signed certificate
+        # MONGODB_SSL_CA:  # Content of CA's certificate (not the path)
+        # MONGODB_SSL_KEY: # Content of the key (default: read ./certs/server.key)
+        # MONGODB_SSL_CERT:  # Content of the certificate (default: read ./certs/server.cert)
+        # Enabling local authentication
+        AUTH_LOCAL: 'true'
+        # Enabling Google OAuth 2.0
+        OAUTH_GOOGLE_ID:
+        OAUTH_GOOGLE_SECRET:
+        # Enabling Google SAML
+        SAML_GOOGLE_ENTRY_POINT:
+        SAML_GOOGLE_ISSUER:
+        # Enabling Microsoft Azure AD OpenID Connect (demo)
+        AZUREAD_OPENIDCONNECT_IDENTITY_METADATA:
+        AZUREAD_OPENIDCONNECT_CLIENT_ID:
+        # Enabling Roche Azure AD
+        ROCHE_AZURE_AD_IDENTITY_METADATA:
+        ROCHE_AZURE_AD_CLIENT_ID:
+        ROCHE_AZURE_AD_CLIENT_SECRET:
+    volumes:
+        - ./certs/server.key:/usr/src/app/certs/server.key:ro
+        - ./certs/server.cert:/usr/src/app/certs/server.cert:ro
+    depends_on:
+        - mongo-prod
+      # - provenance
+
+  # provenance:
+  #   image: docker.synapse.org/syn18489221/prov-service:v0.1
+  #   container_name: provenance
+  #   command: -m synprov
+  #   environment:
+  #     MONGODB_URI: 'mongodb://mongo:27017/provDB'
+  #   ports:
+  #     - 8081:8080
+  #   depends_on:
+  #     - mongo-prod
+
+  mongo-prod:
+    image: docker.synapse.org/syn18489221/phccp-mongo
+    command: mongod --port 27017 --sslMode requireSSL --sslPEMKeyFile /etc/ssl/mongodb.pem
+    container_name: mongo-prod
+    ports:
+        - 27017:27017
+    environment:
+        MONGO_INITDB_ROOT_USERNAME: admin
+        MONGO_INITDB_ROOT_PASSWORD: password
+        # Adding app user
+        MONGO_INITDB_DATABASE: phccp
+        MONGO_USERNAME: app
+        MONGO_PASSWORD: app123
+    volumes:
+        - ./certs/mongodb.pem:/etc/ssl/mongodb.pem:ro
+        # - ./mongodb:/data/db
+
+# version: '3'
+# services:
+#   nginx:
+#     image: "nginx:latest"
+#     ports:
+#       - "80:80"
