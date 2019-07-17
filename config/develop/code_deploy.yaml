@@ -1,5 +1,5 @@
 template_path: code_deploy.yaml
-stack_name: codedeploy
+stack_name: phc-codedeploy
 parameters:
 
   Department: "CompOnc"

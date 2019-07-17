@@ -35,20 +35,20 @@ Parameters:
     Description: "SSL certificate Arn"
 Resources:
 # IAM resources
-  CodeDeployEC2Role:
-    Type: 'AWS::IAM::Role'
-    Properties:
-      AssumeRolePolicyDocument:
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - ec2.amazonaws.com
-            Action:
-              - 'sts:AssumeRole'
-      ManagedPolicyArns:
-        - 'arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforAWSCodeDeploy'
-      Path: /
+  # CodeDeployEC2Role:
+  #   Type: 'AWS::IAM::Role'
+  #   Properties:
+  #     AssumeRolePolicyDocument:
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             Service:
+  #               - ec2.amazonaws.com
+  #           Action:
+  #             - 'sts:AssumeRole'
+  #     ManagedPolicyArns:
+  #       - 'arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforAWSCodeDeploy'
+  #     Path: /
   CodeDeployEC2RoleInstanceProfile:
     Type: 'AWS::IAM::InstanceProfile'
     Properties:
@@ -92,41 +92,41 @@ Resources:
           ToPort: -1
           IpProtocol: "-1"
 
-  CodeDeployS3Bucket:
-    Type: AWS::S3::Bucket
-  BucketPolicy:
-    Type: AWS::S3::BucketPolicy
-    Properties:
-      PolicyDocument:
-        Id: MyPolicy
-        Version: 2012-10-17
-        Statement:
-          - Sid: AllowCodeDeployFromEC2Role
-            Effect: Allow
-            Principal:
-              AWS:
-                - Fn::GetAtt: [ CodeDeployEC2Role, Arn ]
-            Action:
-              - s3:Get*
-              - s3:List*
-            Resource: !Join
-              - ''
-              - - 'arn:aws:s3:::'
-                - !Ref CodeDeployS3Bucket
-                - /*
-          - Sid: AllowPutFromDeployUser
-            Effect: Allow
-            Principal:
-              AWS:
-                - !Ref DeployUserArn
-            Action:
-              - s3:PutObject
-            Resource: !Join
-              - ''
-              - - 'arn:aws:s3:::'
-                - !Ref CodeDeployS3Bucket
-                - /*
-      Bucket: !Ref CodeDeployS3Bucket
+  # CodeDeployS3Bucket:
+  #   Type: AWS::S3::Bucket
+  # BucketPolicy:
+  #   Type: AWS::S3::BucketPolicy
+  #   Properties:
+  #     PolicyDocument:
+  #       Id: MyPolicy
+  #       Version: 2012-10-17
+  #       Statement:
+  #         - Sid: AllowCodeDeployFromEC2Role
+  #           Effect: Allow
+  #           Principal:
+  #             AWS:
+  #               - Fn::GetAtt: [ CodeDeployEC2Role, Arn ]
+  #           Action:
+  #             - s3:Get*
+  #             - s3:List*
+  #           Resource: !Join
+  #             - ''
+  #             - - 'arn:aws:s3:::'
+  #               - !Ref CodeDeployS3Bucket
+  #               - /*
+  #         - Sid: AllowPutFromDeployUser
+  #           Effect: Allow
+  #           Principal:
+  #             AWS:
+  #               - !Ref DeployUserArn
+  #           Action:
+  #             - s3:PutObject
+  #           Resource: !Join
+  #             - ''
+  #             - - 'arn:aws:s3:::'
+  #               - !Ref CodeDeployS3Bucket
+  #               - /*
+  #     Bucket: !Ref CodeDeployS3Bucket
 
   PHCCPEC2Instance:
     Type: 'AWS::EC2::Instance'
@@ -273,18 +273,23 @@ Resources:
     Properties:
       UserName: !Ref PhccpServiceUser
 Outputs:
-  DeploymentBucket:
-    Value: !Ref CodeDeployS3Bucket
-    Description: Name of S3 bucket to be used for deployments
-  DeploymentApplication:
+  CodeDeployApplication:
     Value: !Ref CodeDeployApplication
     Description: Name of CodeDeploy application to be used for deployments
+    Export:
+      Name: !Sub '${AWS::Region}-${AWS::StackName}-CodeDeployApplication'
   DeploymentGroup:
     Value: !Ref DeploymentGroup
     Description: Name of DeploymentGroup application to be used for deployments
+      Export:
+      Name: !Sub '${AWS::Region}-${AWS::StackName}-DeploymentGroup'
   PhccpServiceUserSecretAccessKey:
     Value: !GetAtt PhccpServiceUserAccessKey.SecretAccessKey
     Description: Secret access key of phccp service user
+    Export:
+      Name: !Sub '${AWS::Region}-${AWS::StackName}-PhccpServiceUserSecretAccessKey'
   PhccpServiceUserAccessKeyId:
     Value: !Ref PhccpServiceUserAccessKey
     Description: Access key id of phccp service user
+    Export:
+      Name: !Sub '${AWS::Region}-${AWS::StackName}-PhccpServiceUserAccessKeyId'

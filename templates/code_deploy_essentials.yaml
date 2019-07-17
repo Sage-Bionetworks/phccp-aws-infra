@@ -67,3 +67,65 @@ Resources:
           - !Ref AWS::StackName
           - '/InfraKey'
       TargetKeyId: !Ref AWSKmsInfraKey
+  
+  CodeDeployEC2Role:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforAWSCodeDeploy'
+      Path: /
+
+  PhccpS3User:
+    Type: 'AWS::IAM::User'
+
+  CodeDeployS3Bucket:
+    Type: AWS::S3::Bucket
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      PolicyDocument:
+        Id: MyPolicy
+        Version: 2012-10-17
+        Statement:
+          - Sid: AllowCodeDeployFromEC2Role
+            Effect: Allow
+            Principal:
+              AWS:
+                - Fn::GetAtt: [ CodeDeployEC2Role, Arn ]
+            Action:
+              - s3:Get*
+              - s3:List*
+            Resource: !Join
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref CodeDeployS3Bucket
+                - /*
+          - Sid: AllowPutFromDeployUser
+            Effect: Allow
+            Principal:
+              AWS:
+                - !GetAtt PhccpS3User.Arn
+            Action:
+              - s3:PutObject
+            Resource: !Join
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref CodeDeployS3Bucket
+                - /*
+      Bucket: !Ref CodeDeployS3Bucket
+
+
+Outputs:
+  CodeDeployS3Bucket:
+    Value: !Ref CodeDeployS3Bucket
+    Description: Name of S3 bucket to be used for deployments
+    Export:
+      Name: !Sub '${AWS::Region}-${AWS::StackName}-CodeDeployS3Bucket'

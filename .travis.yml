@@ -31,3 +31,21 @@ jobs:
       script:
         #- ./lint_stack.sh -r || travis_terminate 1
         - travis_wait 30 sceptre launch $TRAVIS_BRANCH --yes
+        - bash deploy-templates.sh
+      # deploy:
+      #   - provider: s3
+      #     access_key_id: "$ACCESS_KEY_ID"
+      #     secret_access_key: "$SECRET_ACCESS_KEY"
+      #     bucket: "phc-cp-dev-codedeploys3bucket-fu73x4w3tqo1"  
+      #     skip_cleanup: true
+      #     local_dir: target
+      #     upload-dir: travis-builds
+      #   - provider: codedeploy
+      #     revision_type: s3
+      #     key: travis-builds/deploy.zip
+      #     bucket: "phc-cp-dev-codedeploys3bucket-fu73x4w3tqo1"  
+      #     access_key_id: "$ACCESS_KEY_ID"
+      #     secret_access_key: "$SECRET_ACCESS_KEY"
+      #     application: "phc-cp-dev-CodeDeployApplication-Y1W5SLLMGLQJ"
+      #     deployment_group: "phc-cp-dev-DeploymentGroup-K9APV8K0C8B9"
+      #     region: "us-east-1"
