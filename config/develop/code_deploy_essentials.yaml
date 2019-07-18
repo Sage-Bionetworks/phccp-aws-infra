@@ -1,0 +1,2 @@
+template_path: code_deploy_essentials.yaml
+stack_name: phc-codedeploy-essentials
