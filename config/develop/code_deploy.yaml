@@ -11,7 +11,7 @@ parameters:
   KeyName: "phccp-autodeploy"
   TagKey: "Name"
   TagValue: "phc-cp"
-  ApplicationName: "phccp-autodeploy"
-  DeploymentGroupName: "phccp-autodeploy-group"
+  # ApplicationName: "phccp-autodeploy"
+  # DeploymentGroupName: "phccp-autodeploy-group"
   SSLCertificateIdArn: "arn:aws:acm:us-east-1:563295687221:certificate/1a81b2e5-531b-4e3b-a81a-5af69ecdd602"
   CodeDeployEC2RoleInstanceProfile: !stack_output_external phc-codedeploy-essentials::CodeDeployEC2RoleInstanceProfile

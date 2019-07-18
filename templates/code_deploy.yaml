@@ -24,12 +24,6 @@ Parameters:
   TagValue:
     Type: String
     Description: "Value of a tag that will be used to mark target deployment EC2 instances"
-  ApplicationName:
-    Type: String
-    Description: "Code Deploy Application Name"
-  DeploymentGroupName:
-    Type: String
-    Description: "Code Deploy Deployment group"
   SSLCertificateIdArn:
     Type: String
     Description: "SSL certificate Arn"
@@ -134,14 +128,12 @@ Resources:
   CodeDeployApplication:
     Type: AWS::CodeDeploy::Application
     Properties:
-      ApplicationName: !Ref ApplicationName
       ComputePlatform: Server
 
   DeploymentGroup:
     Type: AWS::CodeDeploy::DeploymentGroup
     Properties:
       ApplicationName: !Ref CodeDeployApplication
-      DeploymentGroupName: !Ref DeploymentGroupName
       DeploymentConfigName: CodeDeployDefault.AllAtOnce
       ServiceRoleArn: !GetAtt CodeDeployServiceRole.Arn
       DeploymentStyle:
