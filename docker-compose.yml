@@ -25,18 +25,18 @@ services:
         # Enabling local authentication
         AUTH_LOCAL: 'true'
         # Enabling Google OAuth 2.0
-        OAUTH_GOOGLE_ID:
-        OAUTH_GOOGLE_SECRET:
-        # Enabling Google SAML
-        SAML_GOOGLE_ENTRY_POINT:
-        SAML_GOOGLE_ISSUER:
-        # Enabling Microsoft Azure AD OpenID Connect (demo)
-        AZUREAD_OPENIDCONNECT_IDENTITY_METADATA:
-        AZUREAD_OPENIDCONNECT_CLIENT_ID:
-        # Enabling Roche Azure AD
-        ROCHE_AZURE_AD_IDENTITY_METADATA:
-        ROCHE_AZURE_AD_CLIENT_ID:
-        ROCHE_AZURE_AD_CLIENT_SECRET:
+        # OAUTH_GOOGLE_ID:
+        # OAUTH_GOOGLE_SECRET:
+        # # Enabling Google SAML
+        # SAML_GOOGLE_ENTRY_POINT:
+        # SAML_GOOGLE_ISSUER:
+        # # Enabling Microsoft Azure AD OpenID Connect (demo)
+        # AZUREAD_OPENIDCONNECT_IDENTITY_METADATA:
+        # AZUREAD_OPENIDCONNECT_CLIENT_ID:
+        # # Enabling Roche Azure AD
+        # ROCHE_AZURE_AD_IDENTITY_METADATA:
+        # ROCHE_AZURE_AD_CLIENT_ID:
+        # ROCHE_AZURE_AD_CLIENT_SECRET:
     volumes:
         - ./certs/server.key:/usr/src/app/certs/server.key:ro
         - ./certs/server.cert:/usr/src/app/certs/server.cert:ro
