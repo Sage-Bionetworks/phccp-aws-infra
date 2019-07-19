@@ -80,6 +80,14 @@ Resources:
                 - ec2.amazonaws.com
             Action:
               - 'sts:AssumeRole'
+          - Effect: Allow
+            Action:
+            - ssm:DescribeParameters
+            Resource: "*"
+          - Effect: Allow
+            Action:
+            - ssm:GetParameters
+            Resource: !Sub 'arn:aws:ssm:${AWS::Region}:563295687221:parameter/*
       ManagedPolicyArns:
         - 'arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforAWSCodeDeploy'
       Path: /
