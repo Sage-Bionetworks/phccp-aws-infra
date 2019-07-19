@@ -87,7 +87,7 @@ Resources:
           - Effect: Allow
             Action:
             - ssm:GetParameters
-            Resource: !Sub 'arn:aws:ssm:${AWS::Region}:563295687221:parameter/*
+            Resource: !Sub 'arn:aws:ssm:${AWS::Region}:563295687221:parameter/*'
       ManagedPolicyArns:
         - 'arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforAWSCodeDeploy'
       Path: /
