@@ -99,7 +99,7 @@ Resources:
             Action:
             - ssm:GetParameters
             Resource: !Sub 'arn:aws:ssm:${AWS::Region}:563295687221:parameter/*'
-      Roles: 
+      Roles:
       - !Ref CodeDeployEC2Role
 
   PhccpS3User:
