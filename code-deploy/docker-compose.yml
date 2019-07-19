@@ -11,7 +11,7 @@ services:
     environment:
         NODE_ENV: production
         PORT: 443
-        DOMAIN: https://dev.phc.sagesandbox.org
+        DOMAIN: https://develop.phc.sagesandbox.org
         APP_INIT_ADMIN_EMAIL: thomas.schaffter@sagebase.org
         APP_INIT_ADMIN_PASSWORD: admin
         MONGODB_URI: mongodb://mongo-prod:27017/phccp
