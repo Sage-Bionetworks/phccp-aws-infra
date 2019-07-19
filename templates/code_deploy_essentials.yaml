@@ -80,6 +80,17 @@ Resources:
                 - ec2.amazonaws.com
             Action:
               - 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforAWSCodeDeploy'
+      Path: /
+
+  PhccpParameterStorePolicy:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: PhccpParameterStorePolicy
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
           - Effect: Allow
             Action:
             - ssm:DescribeParameters
@@ -88,9 +99,8 @@ Resources:
             Action:
             - ssm:GetParameters
             Resource: !Sub 'arn:aws:ssm:${AWS::Region}:563295687221:parameter/*'
-      ManagedPolicyArns:
-        - 'arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforAWSCodeDeploy'
-      Path: /
+      Roles: 
+      - !Ref CodeDeployEC2Role
 
   PhccpS3User:
     Type: 'AWS::IAM::User'
