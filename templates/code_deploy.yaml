@@ -177,6 +177,7 @@ Resources:
           Value: !Ref Project
         - Key: "OwnerEmail"
           Value: !Ref OwnerEmail
+
   ElbTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
@@ -186,7 +187,7 @@ Resources:
           Port: !Ref AppPort
       VpcId: !Ref VpcId
       Port: !Ref AppPort
-      Protocol: HTTP
+      Protocol: HTTPS
       Tags:
         - Key: "Name"
           Value: !Join
@@ -199,6 +200,7 @@ Resources:
           Value: !Ref Project
         - Key: "OwnerEmail"
           Value: !Ref OwnerEmail
+
   LoadBalancer:
     Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer'
     Properties:
@@ -220,15 +222,7 @@ Resources:
           Value: !Ref Project
         - Key: "OwnerEmail"
           Value: !Ref OwnerEmail
-  ElbHttpListener:
-    Type: 'AWS::ElasticLoadBalancingV2::Listener'
-    Properties:
-      LoadBalancerArn: !Ref LoadBalancer
-      Port: !Ref AppPort
-      Protocol: HTTP
-      DefaultActions:
-        - TargetGroupArn: !Ref ElbTargetGroup
-          Type: forward
+
   ElbHttpsListener:
     Type: 'AWS::ElasticLoadBalancingV2::Listener'
     Properties:
