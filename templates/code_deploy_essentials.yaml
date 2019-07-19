@@ -51,6 +51,7 @@ Resources:
               AWS:
                 - !ImportValue us-east-1-bootstrap-CfServiceRoleArn
                 - !FindInMap [AdminRoleArns, !Ref "AWS::AccountId", Arn]
+                - !GetAtt CodeDeployEC2Role.Arn
             Action:
               - "kms:Encrypt"
               - "kms:Decrypt"
