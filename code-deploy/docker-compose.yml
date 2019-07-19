@@ -10,7 +10,7 @@ services:
         - 80:443
     environment:
         NODE_ENV: production
-        PORT: 443
+        PORT: 80
         DOMAIN: https://dev.phc.sagesandbox.org
         APP_INIT_ADMIN_EMAIL: thomas.schaffter@sagebase.org
         APP_INIT_ADMIN_PASSWORD: admin
