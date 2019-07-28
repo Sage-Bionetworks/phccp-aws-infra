@@ -20,7 +20,6 @@ DOCKERPASSWORD=$(aws ssm get-parameters --region us-east-1 --names DOCKER_PASSWO
 export NEO4J_USERNAME=neo4j
 export NEO4J_PASSWORD=password
 
-
 export CERTS_DIR=certs
 mkdir $CERTS_DIR
 openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=US/ST=Washington/L=Seattle/O=Sage Bionetworks/CN=www.sagebionetworks.org" -keyout $CERTS_DIR/server.key -out $CERTS_DIR/server.cert
