@@ -96,4 +96,4 @@ export PROVENANCE_API_SERVER_PORT=8080
 export PROVENANCE_API_SERVER_PATH=/rest/v1
 
 docker login $DOCKERREGISTRY -u $DOCKERUSER -p $DOCKERPASSWORD
-docker-compose pull && docker-compose up -d
+docker-compose pull && docker-compose up -d --remove-orphans
