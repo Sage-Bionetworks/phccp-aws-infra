@@ -3,10 +3,12 @@ version: '3.2'
 
 services:
   phccp:
-    build:
-        context: .
-        dockerfile: Dockerfile
-    image: phccp
+    # build:
+    #     context: .
+    #     dockerfile: Dockerfile
+    # image: phccp
+    image: docker.synapse.org/syn18489221/phc-collaboration-portal:develop
+
     # Or use the latest build available on the docker registry
     # image: docker.synapse.org/syn18489221/phc-collaboration-portal:develop
     container_name: phccp
