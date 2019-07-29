@@ -95,6 +95,7 @@ export PROVENANCE_API_SERVER_PATH=/rest/v1
 docker login $DOCKERREGISTRY -u $DOCKERUSER -p $DOCKERPASSWORD
 
 echo Stopping docker-compose
+docker stop $(docker ps -a -q)
 docker-compose down --remove-orphans || true
 echo Starting docker-compose
 docker-compose pull && docker-compose up -d
