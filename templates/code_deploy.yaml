@@ -101,7 +101,7 @@ Resources:
     Type: 'AWS::EC2::Instance'
     Properties:
       ImageId: ami-0c6b1d09930fac512
-      InstanceType: t2.micro
+      InstanceType: t3.small
       Monitoring: True
       DisableApiTermination: False
       IamInstanceProfile: !Ref CodeDeployEC2RoleInstanceProfile
@@ -110,7 +110,7 @@ Resources:
       - DeviceName: "/dev/xvda"
         Ebs:
           DeleteOnTermination: true
-          VolumeSize: 100
+          VolumeSize: 200
           Encrypted: true
       Tags:
       - Key: !Ref TagKey
@@ -261,6 +261,10 @@ Resources:
         - Key: !Ref TagKey
           Value: !Ref TagValue
           Type: "KEY_AND_VALUE"
+      AutoRollbackConfiguration:
+        Enabled: true
+        Events:
+        - "DEPLOYMENT_FAILURE"
       # Deployment:
       #   Description: "Phccp github deploy"
       #   IgnoreApplicationStopFailures: true
