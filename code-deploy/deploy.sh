@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 cd /tmp
-echo Stopping docker-compose
-docker-compose down  --remove-orphans || true
-echo Starting docker-compose
 
 DOCKERREGISTRY=$(aws ssm get-parameters --region us-east-1 --names DOCKER_REGISTRY --with-decryption --query Parameters[0].Value | sed 's\"\\g')
 DOCKERUSER=$(aws ssm get-parameters --region us-east-1 --names DOCKER_USER --with-decryption --query Parameters[0].Value | sed 's\"\\g')
@@ -96,4 +93,8 @@ export PROVENANCE_API_SERVER_PORT=8080
 export PROVENANCE_API_SERVER_PATH=/rest/v1
 
 docker login $DOCKERREGISTRY -u $DOCKERUSER -p $DOCKERPASSWORD
+
+echo Stopping docker-compose
+docker-compose down --remove-orphans || true
+echo Starting docker-compose
 docker-compose pull && docker-compose up -d
