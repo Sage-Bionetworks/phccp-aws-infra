@@ -61,10 +61,8 @@ export OAUTH_GOOGLE_SECRET=
 # export OAUTH_GOOGLE_SECRET=$(aws ssm get-parameters --region us-east-1 --names OAUTH_GOOGLE_SECRET --with-decryption --query Parameters[0].Value | sed 's\"\\g')
 
 ## Enabling Google SAML
-export SAML_GOOGLE_ENTRY_POINT=
-export SAML_GOOGLE_ISSUER=
-# export SAML_GOOGLE_ENTRY_POINT=$(aws ssm get-parameters --region us-east-1 --names SAML_GOOGLE_ENTRY_POINT --with-decryption --query Parameters[0].Value | sed 's\"\\g')
-# export SAML_GOOGLE_ISSUER=$(aws ssm get-parameters --region us-east-1 --names SAML_GOOGLE_ISSUER --with-decryption --query Parameters[0].Value | sed 's\"\\g')
+export SAML_GOOGLE_ENTRY_POINT=$(aws ssm get-parameters --region us-east-1 --names SAML_GOOGLE_ENTRY_POINT --with-decryption --query Parameters[0].Value | sed 's\"\\g')
+export SAML_GOOGLE_ISSUER=$(aws ssm get-parameters --region us-east-1 --names SAML_GOOGLE_ISSUER --with-decryption --query Parameters[0].Value | sed 's\"\\g')
 
 ## Enabling Microsoft Azure AD OpenID Connect (demo)
 export AZUREAD_OPENIDCONNECT_IDENTITY_METADATA=
