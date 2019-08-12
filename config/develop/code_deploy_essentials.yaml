@@ -1,2 +1,6 @@
 template_path: code_deploy_essentials.yaml
 stack_name: phc-codedeploy-essentials
+parameters:
+  Department: "CompOnc"
+  Project: "phccp"
+  OwnerEmail: "thomas.yu@sagebase.org"

@@ -95,7 +95,13 @@ Resources:
           FromPort: -1
           ToPort: -1
           IpProtocol: "-1"
-
+      Tags:
+        - Key: "Department"
+          Value: !Ref Department
+        - Key: "Project"
+          Value: !Ref Project
+        - Key: "OwnerEmail"
+          Value: !Ref OwnerEmail
 
   PHCCPEC2Instance:
     Type: 'AWS::EC2::Instance'
@@ -113,8 +119,14 @@ Resources:
           VolumeSize: 200
           Encrypted: true
       Tags:
-      - Key: !Ref TagKey
-        Value: !Ref TagValue
+        - Key: !Ref TagKey
+          Value: !Ref TagValue
+        - Key: "Department"
+          Value: !Ref Department
+        - Key: "Project"
+          Value: !Ref Project
+        - Key: "OwnerEmail"
+          Value: !Ref OwnerEmail
       NetworkInterfaces:
       - DeleteOnTermination: true
         DeviceIndex: "0"
