@@ -116,7 +116,7 @@ Resources:
       - DeviceName: "/dev/xvda"
         Ebs:
           DeleteOnTermination: true
-          VolumeSize: 200
+          VolumeSize: 800
           Encrypted: true
       Tags:
         - Key: !Ref TagKey
