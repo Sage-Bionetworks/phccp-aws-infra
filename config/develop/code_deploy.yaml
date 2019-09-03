@@ -9,7 +9,7 @@ parameters:
   OwnerEmail: "thomas.yu@sagebase.org"
 
   # KeyName: "phccp-autodeploy"
-  KeyName: "sandboxtom"
+  KeyName: "tomnew"
   TagKey: "Name"
   TagValue: "phc-cp"
   # ApplicationName: "phccp-autodeploy"
