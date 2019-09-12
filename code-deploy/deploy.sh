@@ -24,7 +24,7 @@ export MONGO_PASSWORD=app123
 export NODE_ENV=production
 export CLIENT_PORT=
 export PORT=443
-export DOMAIN=https://localhost
+export DOMAIN=https://develop.phc.sagesandbox.org
 
 ## Session secret
 export SESSION_SECRET=phccp-secret
