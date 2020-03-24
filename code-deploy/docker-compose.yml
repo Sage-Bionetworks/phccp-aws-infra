@@ -7,11 +7,11 @@ services:
     #     context: .
     #     dockerfile: Dockerfile
     # image: phccp
-    image: docker.synapse.org/syn18489221/phc-collaboration-portal:develop
+    image: sagebionetworks/sagebio-collaboration-portal
 
     # Or use the latest build available on the docker registry
     # image: docker.synapse.org/syn18489221/phc-collaboration-portal:develop
-    container_name: phccp
+    container_name: sbcp
     ports:
         - ${PORT}:${PORT}
     environment:
@@ -57,20 +57,20 @@ services:
         ROCHE_AZURE_AD_CLIENT_SECRET: ${ROCHE_AZURE_AD_CLIENT_SECRET}
         # Provenance service
         PROVENANCE_API_SERVER_PROTOCOL: ${PROVENANCE_API_SERVER_PROTOCOL}
-        PROVENANCE_API_SERVER_IP: phccp-prov
+        PROVENANCE_API_SERVER_IP: sbcp-prov
         PROVENANCE_API_SERVER_PORT: ${PROVENANCE_API_SERVER_PORT}
         PROVENANCE_API_SERVER_PATH: ${PROVENANCE_API_SERVER_PATH}
     volumes:
         - ./certs/server.key:/usr/src/app/certs/server.key:ro
         - ./certs/server.cert:/usr/src/app/certs/server.cert:ro
     depends_on:
-        - phccp-mongo
-        - phccp-prov
+        - sbcp-mongo
+        - sbcp-prov
 
   phccp-mongo:
-    image: docker.synapse.org/syn18489221/phccp-mongo
+    image: sagebionetworks/sbcp-mongo
     command: mongod --port ${MONGODB_PORT} --tlsMode requireTLS --tlsCertificateKeyFile /etc/ssl/mongodb.pem
-    container_name: phccp-mongo
+    container_name: sbcp-mongo
     ports:
         - ${MONGODB_PORT}:${MONGODB_PORT}
     environment:
@@ -85,8 +85,8 @@ services:
         # - ./mongodb:/data/db
 
   phccp-neo4j:
-    image: docker.synapse.org/syn18489221/phccp-neo4j
-    container_name: phccp-neo4j
+    image: graphfoundation/ongdb:3.5
+    container_name: sbcp-neo4j
     ports:
       - 7687:7687
       - 7474:7474
@@ -97,9 +97,9 @@ services:
       - /tmp/neo4j/logs:/logs
 
   phccp-prov:
-    image: docker.synapse.org/syn18489221/prov-service:develop
+    image: sagebionetworks/prov-service
     command: python3 -m synprov
-    container_name: phccp-prov
+    container_name: sbcp-prov
     ports:
       - ${PROVENANCE_API_SERVER_PORT}:${PROVENANCE_API_SERVER_PORT}
     environment:
@@ -110,4 +110,4 @@ services:
       NEO4J_PASSWORD: ${NEO4J_PASSWORD}
       FLASK_HOST: "0.0.0.0"
     depends_on:
-      - phccp-neo4j
+      - sbcp-neo4j
