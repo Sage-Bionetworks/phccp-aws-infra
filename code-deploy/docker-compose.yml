@@ -6,8 +6,8 @@ services:
     # build:
     #     context: .
     #     dockerfile: Dockerfile
-    # image: phccp
-    image: sagebionetworks/sbcp:develop
+    # image: sbcp
+    image: sagebionetworks/sagebio-collaboration-portal
 
     # Or use the latest build available on the docker registry
     # image: docker.synapse.org/syn18489221/phc-collaboration-portal:develop
@@ -57,7 +57,7 @@ services:
         ROCHE_AZURE_AD_CLIENT_SECRET: ${ROCHE_AZURE_AD_CLIENT_SECRET}
         # Provenance service
         PROVENANCE_API_SERVER_PROTOCOL: ${PROVENANCE_API_SERVER_PROTOCOL}
-        PROVENANCE_API_SERVER_IP: phccp-prov
+        PROVENANCE_API_SERVER_IP: sbcp-prov
         PROVENANCE_API_SERVER_PORT: ${PROVENANCE_API_SERVER_PORT}
         PROVENANCE_API_SERVER_PATH: ${PROVENANCE_API_SERVER_PATH}
     volumes:
@@ -85,7 +85,7 @@ services:
         # - ./mongodb:/data/db
 
   sbcp-neo4j:
-    image: sagebionetworks/sbcp-neo4j
+    image: graphfoundation/ongdb:3.5
     container_name: sbcp-neo4j
     ports:
       - 7687:7687
@@ -97,7 +97,7 @@ services:
       - /tmp/neo4j/logs:/logs
 
   sbcp-prov:
-    image: sagebionetworks/prov-service:develop
+    image: sagebionetworks/prov-service
     command: python3 -m synprov
     container_name: sbcp-prov
     ports:
