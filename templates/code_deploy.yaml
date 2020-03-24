@@ -309,7 +309,7 @@ Resources:
   #               - !Ref PhccpServiceUser
   #           Action: "secretsmanager:GetSecretValue"
   #           Resource: "*"
-  PhccpServiceUser:
+  SbcpServiceUser:
     Type: 'AWS::IAM::User'
     Properties:
       Policies:
@@ -322,31 +322,20 @@ Resources:
             - codedeploy:CreateDeployment
             Resource:
             - "*"
-            # - !Join
-            #   - ''
-            #   - - "arn:aws:codedeploy:us-east-1:055273631518:deploymentgroup:"
-            #     - !Ref ApplicationName
-            #     - "/"
-            #     - !Ref DeploymentGroupName
           - Effect: Allow
             Action:
             - codedeploy:GetDeploymentConfig
             Resource:
             - "*"
-            # - "arn:aws:codedeploy:us-east-1:055273631518:deploymentconfig:CodeDeployDefault.AllAtOnce"
           - Effect: Allow
             Action:
             - codedeploy:GetApplicationRevision
             Resource:
             - "*"
-            # - !Join
-            #   - ''
-            #   - - "arn:aws:codedeploy:us-east-1:055273631518:application:"
-            #     - !Ref ApplicationName
-  PhccpServiceUserAccessKey:
+  SbcpServiceUserAccessKey:
     Type: 'AWS::IAM::AccessKey'
     Properties:
-      UserName: !Ref PhccpServiceUser
+      UserName: !Ref SbcpServiceUser
 Outputs:
   CodeDeployApplication:
     Value: !Ref CodeDeployApplication
@@ -358,16 +347,16 @@ Outputs:
     Description: Name of DeploymentGroup application to be used for deployments
     Export:
       Name: !Sub '${AWS::Region}-${AWS::StackName}-DeploymentGroup'
-  PhccpServiceUserSecretAccessKey:
-    Value: !GetAtt PhccpServiceUserAccessKey.SecretAccessKey
-    Description: Secret access key of phccp service user
+  SbcpServiceUserSecretAccessKey:
+    Value: !GetAtt SbcpServiceUserAccessKey.SecretAccessKey
+    Description: Secret access key of sbcp service user
     Export:
-      Name: !Sub '${AWS::Region}-${AWS::StackName}-PhccpServiceUserSecretAccessKey'
-  PhccpServiceUserAccessKeyId:
-    Value: !Ref PhccpServiceUserAccessKey
-    Description: Access key id of phccp service user
+      Name: !Sub '${AWS::Region}-${AWS::StackName}-SbcpServiceUserSecretAccessKey'
+  SbcpServiceUserAccessKeyId:
+    Value: !Ref SbcpServiceUserAccessKey
+    Description: Access key id of sbcp service user
     Export:
-      Name: !Sub '${AWS::Region}-${AWS::StackName}-PhccpServiceUserAccessKeyId'
+      Name: !Sub '${AWS::Region}-${AWS::StackName}-SbcpServiceUserAccessKeyId'
   LoadBalancerName:
     Value: !GetAtt LoadBalancer.LoadBalancerName
     Export:
