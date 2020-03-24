@@ -16,7 +16,7 @@ export MONGO_PORT=27017
 export MONGO_INITDB_ROOT_USERNAME=admin
 export MONGO_INITDB_ROOT_PASSWORD=password
 ## Configuring for the portal
-export MONGO_INITDB_DATABASE=phccp
+export MONGO_INITDB_DATABASE=sbcp
 export MONGO_USERNAME=app
 export MONGO_PASSWORD=app123
 
@@ -27,7 +27,7 @@ export PORT=443
 export DOMAIN=https://develop.phc.sagesandbox.org
 
 ## Session secret
-export SESSION_SECRET=phccp-secret
+export SESSION_SECRET=sbcp-secret
 
 ## Configuring SSL
 export SSL_KEY=`cat ./certs/server.key`
@@ -90,7 +90,7 @@ export PROVENANCE_API_SERVER_IP=localhost
 export PROVENANCE_API_SERVER_PORT=8080
 export PROVENANCE_API_SERVER_PATH=/rest/v1
 
-docker login $DOCKERREGISTRY -u $DOCKERUSER -p $DOCKERPASSWORD
+# docker login $DOCKERREGISTRY -u $DOCKERUSER -p $DOCKERPASSWORD
 
 echo Stopping docker-compose
 docker stop $(docker ps -a -q)

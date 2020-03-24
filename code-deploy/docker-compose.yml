@@ -2,11 +2,11 @@
 version: '3.2'
 
 services:
-  phccp:
+  sbcp:
     # build:
     #     context: .
     #     dockerfile: Dockerfile
-    # image: phccp
+    # image: sbcp
     image: sagebionetworks/sagebio-collaboration-portal
 
     # Or use the latest build available on the docker registry
@@ -67,7 +67,7 @@ services:
         - sbcp-mongo
         - sbcp-prov
 
-  phccp-mongo:
+  sbcp-mongo:
     image: sagebionetworks/sbcp-mongo
     command: mongod --port ${MONGODB_PORT} --tlsMode requireTLS --tlsCertificateKeyFile /etc/ssl/mongodb.pem
     container_name: sbcp-mongo
@@ -84,7 +84,7 @@ services:
         - ./certs/mongodb.pem:/etc/ssl/mongodb.pem:ro
         # - ./mongodb:/data/db
 
-  phccp-neo4j:
+  sbcp-neo4j:
     image: graphfoundation/ongdb:3.5
     container_name: sbcp-neo4j
     ports:
@@ -96,7 +96,7 @@ services:
       - /tmp/neo4j/data:/var/lib/neo4j/data
       - /tmp/neo4j/logs:/logs
 
-  phccp-prov:
+  sbcp-prov:
     image: sagebionetworks/prov-service
     command: python3 -m synprov
     container_name: sbcp-prov
@@ -104,7 +104,7 @@ services:
       - ${PROVENANCE_API_SERVER_PORT}:${PROVENANCE_API_SERVER_PORT}
     environment:
       NEO4J_SCHEME: bolt
-      NEO4J_HOST: phccp-neo4j
+      NEO4J_HOST: sbcp-neo4j
       NEO4J_PORT: 7687
       NEO4J_USERNAME: ${NEO4J_USERNAME}
       NEO4J_PASSWORD: ${NEO4J_PASSWORD}
