@@ -90,7 +90,7 @@ export PROVENANCE_API_SERVER_IP=localhost
 export PROVENANCE_API_SERVER_PORT=8080
 export PROVENANCE_API_SERVER_PATH=/rest/v1
 
-docker login $DOCKERREGISTRY -u $DOCKERUSER -p $DOCKERPASSWORD
+# docker login $DOCKERREGISTRY -u $DOCKERUSER -p $DOCKERPASSWORD
 
 echo Stopping docker-compose
 docker stop $(docker ps -a -q)
