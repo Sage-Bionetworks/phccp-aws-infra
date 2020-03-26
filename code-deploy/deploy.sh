@@ -29,8 +29,7 @@ export NODE_ENV=production
 export CLIENT_PORT=
 #443
 export PORT=443
-#export DOMAIN=https://develop.phc.sagesandbox.org
-export DOMAIN=https://localhost
+export DOMAIN=https://develop.phc.sagesandbox.org
 
 ## Session secret
 export SESSION_SECRET=phccp-secret
