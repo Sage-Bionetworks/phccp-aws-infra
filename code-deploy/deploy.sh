@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 cd /tmp
 
-DOCKERREGISTRY=$(aws ssm get-parameters --region us-east-1 --names DOCKER_REGISTRY --with-decryption --query Parameters[0].Value | sed 's\"\\g')
-DOCKERUSER=$(aws ssm get-parameters --region us-east-1 --names DOCKER_USER --with-decryption --query Parameters[0].Value | sed 's\"\\g')
-DOCKERPASSWORD=$(aws ssm get-parameters --region us-east-1 --names DOCKER_PASSWORD --with-decryption --query Parameters[0].Value | sed 's\"\\g')
+# DOCKERREGISTRY=$(aws ssm get-parameters --region us-east-1 --names DOCKER_REGISTRY --with-decryption --query Parameters[0].Value | sed 's\"\\g')
+# DOCKERUSER=$(aws ssm get-parameters --region us-east-1 --names DOCKER_USER --with-decryption --query Parameters[0].Value | sed 's\"\\g')
+# DOCKERPASSWORD=$(aws ssm get-parameters --region us-east-1 --names DOCKER_PASSWORD --with-decryption --query Parameters[0].Value | sed 's\"\\g')
 
 export CERTS_DIR=certs
 mkdir $CERTS_DIR
@@ -16,13 +16,14 @@ export MONGO_PORT=27017
 export MONGO_INITDB_ROOT_USERNAME=admin
 export MONGO_INITDB_ROOT_PASSWORD=password
 ## Configuring for the portal
-export MONGO_INITDB_DATABASE=sbcp
+export MONGO_INITDB_DATABASE=sbcp-dev
 export MONGO_USERNAME=app
 export MONGO_PASSWORD=app123
 
 # PORTAL
 export NODE_ENV=production
 export CLIENT_PORT=
+#443
 export PORT=443
 export DOMAIN=https://develop.phc.sagesandbox.org
 
