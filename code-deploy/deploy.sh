@@ -13,16 +13,12 @@ cat $CERTS_DIR/server.key $CERTS_DIR/server.cert > $CERTS_DIR/mongodb.pem
 
 # MONGODB
 export MONGO_PORT=27017
-export MONGO_INITDB_ROOT_USERNAME=
-#admin
-export MONGO_INITDB_ROOT_PASSWORD=
-#password
+export MONGO_INITDB_ROOT_USERNAME=admin
+export MONGO_INITDB_ROOT_PASSWORD=password
 ## Configuring for the portal
-export MONGO_INITDB_DATABASE=phccp-dev
-export MONGO_USERNAME=
-#app
-export MONGO_PASSWORD=
-#app123
+export MONGO_INITDB_DATABASE=sbcp-dev
+export MONGO_USERNAME=app
+export MONGO_PASSWORD=app123
 
 # PORTAL
 export NODE_ENV=production
@@ -32,7 +28,7 @@ export PORT=443
 export DOMAIN=https://develop.phc.sagesandbox.org
 
 ## Session secret
-export SESSION_SECRET=phccp-secret
+export SESSION_SECRET=sbcp-secret
 
 ## Configuring SSL
 export SSL_KEY=`cat ./certs/server.key`
