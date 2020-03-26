@@ -25,7 +25,7 @@ services:
         SSL_CERT: ${SSL_CERT}
         # Configuring MongoDB
         MONGODB_PROTOCOL: ${MONGODB_PROTOCOL}
-        MONGODB_IP: phccp-mongo
+        MONGODB_IP: sbcp-mongo
         MONGODB_PORT: ${MONGODB_PORT}
         MONGODB_PATH: ${MONGODB_PATH}
         MONGODB_USER: ${MONGODB_USER}

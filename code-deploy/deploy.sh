@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 cd /tmp
 
-DOCKERREGISTRY=$(aws ssm get-parameters --region us-east-1 --names DOCKER_REGISTRY --with-decryption --query Parameters[0].Value | sed 's\"\\g')
-DOCKERUSER=$(aws ssm get-parameters --region us-east-1 --names DOCKER_USER --with-decryption --query Parameters[0].Value | sed 's\"\\g')
-DOCKERPASSWORD=$(aws ssm get-parameters --region us-east-1 --names DOCKER_PASSWORD --with-decryption --query Parameters[0].Value | sed 's\"\\g')
+# DOCKERREGISTRY=$(aws ssm get-parameters --region us-east-1 --names DOCKER_REGISTRY --with-decryption --query Parameters[0].Value | sed 's\"\\g')
+# DOCKERUSER=$(aws ssm get-parameters --region us-east-1 --names DOCKER_USER --with-decryption --query Parameters[0].Value | sed 's\"\\g')
+# DOCKERPASSWORD=$(aws ssm get-parameters --region us-east-1 --names DOCKER_PASSWORD --with-decryption --query Parameters[0].Value | sed 's\"\\g')
 
 export CERTS_DIR=certs
 mkdir $CERTS_DIR
@@ -13,21 +13,27 @@ cat $CERTS_DIR/server.key $CERTS_DIR/server.cert > $CERTS_DIR/mongodb.pem
 
 # MONGODB
 export MONGO_PORT=27017
-export MONGO_INITDB_ROOT_USERNAME=admin
-export MONGO_INITDB_ROOT_PASSWORD=password
+export MONGO_INITDB_ROOT_USERNAME=
+#admin
+export MONGO_INITDB_ROOT_PASSWORD=
+#password
 ## Configuring for the portal
-export MONGO_INITDB_DATABASE=sbcp
-export MONGO_USERNAME=app
-export MONGO_PASSWORD=app123
+export MONGO_INITDB_DATABASE=phccp-dev
+export MONGO_USERNAME=
+#app
+export MONGO_PASSWORD=
+#app123
 
 # PORTAL
 export NODE_ENV=production
 export CLIENT_PORT=
+#443
 export PORT=443
-export DOMAIN=https://develop.phc.sagesandbox.org
+#export DOMAIN=https://develop.phc.sagesandbox.org
+export DOMAIN=https://localhost
 
 ## Session secret
-export SESSION_SECRET=sbcp-secret
+export SESSION_SECRET=phccp-secret
 
 ## Configuring SSL
 export SSL_KEY=`cat ./certs/server.key`
@@ -43,8 +49,8 @@ export MONGODB_PASSWORD=${MONGO_PASSWORD}
 export MONGODB_SSL=true
 export MONGODB_SSL_VALIDATE=false  # Set to false when using self-signed certificate
 export MONGODB_SSL_CA=  # Content of CA's certificate
-export MONGODB_SSL_KEY=`cat ./certs/server.key`  # Content of the key (default: read ./certs/server.key)
-export MONGODB_SSL_CERT=`cat ./certs/server.cert`  # Content of the certificate (default: read ./certs/server.cert)
+export MONGODB_SSL_KEY= `cat ./certs/server.key`  # Content of the key (default: read ./certs/server.key)
+export MONGODB_SSL_CERT= `cat ./certs/server.cert`  # Content of the certificate (default: read ./certs/server.cert)
 
 ## Initialization (credentials works with local and SSO auth strategies)
 export APP_INIT_ADMIN_EMAIL=thomas.schaffter@sagebase.org
