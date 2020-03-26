@@ -48,8 +48,8 @@ export MONGODB_PASSWORD=${MONGO_PASSWORD}
 export MONGODB_SSL=true
 export MONGODB_SSL_VALIDATE=false  # Set to false when using self-signed certificate
 export MONGODB_SSL_CA=  # Content of CA's certificate
-export MONGODB_SSL_KEY= `cat ./certs/server.key`  # Content of the key (default: read ./certs/server.key)
-export MONGODB_SSL_CERT= `cat ./certs/server.cert`  # Content of the certificate (default: read ./certs/server.cert)
+export MONGODB_SSL_KEY=`cat ./certs/server.key`  # Content of the key (default: read ./certs/server.key)
+export MONGODB_SSL_CERT=`cat ./certs/server.cert`  # Content of the certificate (default: read ./certs/server.cert)
 
 ## Initialization (credentials works with local and SSO auth strategies)
 export APP_INIT_ADMIN_EMAIL=thomas.schaffter@sagebase.org
