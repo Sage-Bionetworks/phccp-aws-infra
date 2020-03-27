@@ -103,7 +103,7 @@ Resources:
         - Key: "OwnerEmail"
           Value: !Ref OwnerEmail
 
-  PHCCPEC2Instance:
+  SBCPEC2Instance:
     Type: 'AWS::EC2::Instance'
     Properties:
       ImageId: ami-0c6b1d09930fac512
@@ -201,7 +201,7 @@ Resources:
     Properties:
       TargetType: instance
       Targets:
-        - Id: !Ref PHCCPEC2Instance
+        - Id: !Ref SBCPEC2Instance
           Port: !Ref AppPort
       VpcId: !Ref VpcId
       Port: !Ref AppPort
@@ -210,7 +210,7 @@ Resources:
         - Key: "Name"
           Value: !Join
             - '-'
-            - - !Ref PHCCPEC2Instance
+            - - !Ref SBCPEC2Instance
               - "ELB"
         - Key: "Department"
           Value: !Ref Department
@@ -232,7 +232,7 @@ Resources:
         - Key: "Name"
           Value: !Join
             - '-'
-            - - !Ref PHCCPEC2Instance
+            - - !Ref SBCPEC2Instance
               - "ELB"
         - Key: "Department"
           Value: !Ref Department
@@ -278,7 +278,7 @@ Resources:
         Events:
         - "DEPLOYMENT_FAILURE"
       # Deployment:
-      #   Description: "Phccp github deploy"
+      #   Description: "Sbcp github deploy"
       #   IgnoreApplicationStopFailures: true
       #   Revision:
       #     RevisionType: S3
@@ -289,26 +289,6 @@ Resources:
         TargetGroupInfoList:
           - Name: !GetAtt ElbTargetGroup.TargetGroupName
 
-
-# # Secrets
-  #   DockerRegistrySecret:
-  #   Type: 'AWS::SecretsManager::Secret'
-  #   Properties:
-  #     SecretString: '{"username":"DockerUsername","password":"Docker-Password"}'
-  # DockerSecretResourcePolicy:
-  #   Type: AWS::SecretsManager::ResourcePolicy
-  #   Properties:
-  #     SecretId: !Ref DockerRegistrySecret
-  #     ResourcePolicy:
-  #       Version: "2012-10-17"
-  #       Statement:
-  #         -
-  #           Effect: "Allow"
-  #           Principal:
-  #             AWS:
-  #               - !Ref PhccpServiceUser
-  #           Action: "secretsmanager:GetSecretValue"
-  #           Resource: "*"
   SbcpServiceUser:
     Type: 'AWS::IAM::User'
     Properties:

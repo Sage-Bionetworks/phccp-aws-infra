@@ -1,21 +1,21 @@
 template_path: code_deploy.yaml
-stack_name: phc-codedeploy
+stack_name: sbcp-codedeploy
 dependencies:
   - develop/code_deploy_essentials.yaml
 parameters:
 
   Department: "CompOnc"
-  Project: "phccp"
+  Project: "sbcp"
   OwnerEmail: "thomas.yu@sagebase.org"
 
   # KeyName: "phccp-autodeploy"
   KeyName: "tomnew"
   TagKey: "Name"
-  TagValue: "phc-cp"
-  # ApplicationName: "phccp-autodeploy"
-  # DeploymentGroupName: "phccp-autodeploy-group"
+  TagValue: "sbcp"
+  # ApplicationName: "sbcp-autodeploy"
+  # DeploymentGroupName: "sbcp-autodeploy-group"
   SSLCertificateIdArn: "arn:aws:acm:us-east-1:563295687221:certificate/1a81b2e5-531b-4e3b-a81a-5af69ecdd602"
-  CodeDeployEC2RoleInstanceProfile: !stack_output_external phc-codedeploy-essentials::CodeDeployEC2RoleInstanceProfile
+  CodeDeployEC2RoleInstanceProfile: !stack_output_external sbcp-codedeploy-essentials::CodeDeployEC2RoleInstanceProfile
   #sandcastle vpc
   VpcId: vpc-0e9b80dc470a797d5
   #public subnets
