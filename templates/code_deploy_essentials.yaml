@@ -82,7 +82,7 @@ Resources:
           Value: !Ref Project
         - Key: "OwnerEmail"
           Value: !Ref OwnerEmail
-  AWSKmsPHCCPInfraKeyAlias:
+  AWSKmsSBCPInfraKeyAlias:
     Type: AWS::KMS::Alias
     Properties:
       AliasName: !Join
@@ -107,10 +107,10 @@ Resources:
         - 'arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforAWSCodeDeploy'
       Path: /
 
-  PhccpParameterStorePolicy:
+  SbcpParameterStorePolicy:
     Type: 'AWS::IAM::Policy'
     Properties:
-      PolicyName: PhccpParameterStorePolicy
+      PolicyName: SbcpParameterStorePolicy
       PolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -125,7 +125,7 @@ Resources:
       Roles:
       - !Ref CodeDeployEC2Role
 
-  PhccpS3User:
+  SbcpS3User:
     Type: 'AWS::IAM::User'
 
   CodeDeployS3Bucket:
@@ -162,7 +162,7 @@ Resources:
             Effect: Allow
             Principal:
               AWS:
-                - !GetAtt PhccpS3User.Arn
+                - !GetAtt SbcpS3User.Arn
             Action:
               - s3:PutObject
             Resource: !Join
