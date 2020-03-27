@@ -14,7 +14,7 @@ parameters:
   TagValue: "sbcp"
   # ApplicationName: "sbcp-autodeploy"
   # DeploymentGroupName: "sbcp-autodeploy-group"
-  SSLCertificateIdArn: "arn:aws:acm:us-east-1:563295687221:certificate/1a81b2e5-531b-4e3b-a81a-5af69ecdd602"
+  SSLCertificateIdArn: "arn:aws:acm:us-east-1:563295687221:certificate/38635e28-7aca-46c1-8c0c-2e54f7560909"
   CodeDeployEC2RoleInstanceProfile: !stack_output_external sbcp-codedeploy-essentials::CodeDeployEC2RoleInstanceProfile
   #sandcastle vpc
   VpcId: vpc-0e9b80dc470a797d5
