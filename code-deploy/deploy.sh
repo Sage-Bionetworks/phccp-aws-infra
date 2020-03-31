@@ -25,7 +25,7 @@ export NODE_ENV=production
 export CLIENT_PORT=
 #443
 export PORT=443
-export DOMAIN=https://develop.phc.sagesandbox.org
+export DOMAIN=https://sbcp.sagesandbox.org
 
 ## Session secret
 export SESSION_SECRET=sbcp-secret
@@ -56,14 +56,12 @@ export APP_INIT_DB_SEED_NAME=development
 export AUTH_LOCAL=true
 
 ## Enabling Google OAuth 2.0
-export OAUTH_GOOGLE_ID=
-export OAUTH_GOOGLE_SECRET=
-# export OATH_GOOGLE_ID=$(aws ssm get-parameters --region us-east-1 --names OATH_GOOGLE_ID --with-decryption --query Parameters[0].Value | sed 's\"\\g')
-# export OAUTH_GOOGLE_SECRET=$(aws ssm get-parameters --region us-east-1 --names OAUTH_GOOGLE_SECRET --with-decryption --query Parameters[0].Value | sed 's\"\\g')
+export OATH_GOOGLE_ID=$(aws ssm get-parameters --region us-east-1 --names SBCP_OATH_GOOGLE_ID --with-decryption --query Parameters[0].Value | sed 's\"\\g')
+export OAUTH_GOOGLE_SECRET=$(aws ssm get-parameters --region us-east-1 --names SBCP_OAUTH_GOOGLE_SECRET --with-decryption --query Parameters[0].Value | sed 's\"\\g')
 
 ## Enabling Google SAML
-export SAML_GOOGLE_ENTRY_POINT=$(aws ssm get-parameters --region us-east-1 --names SAML_GOOGLE_ENTRY_POINT --with-decryption --query Parameters[0].Value | sed 's\"\\g')
-export SAML_GOOGLE_ISSUER=$(aws ssm get-parameters --region us-east-1 --names SAML_GOOGLE_ISSUER --with-decryption --query Parameters[0].Value | sed 's\"\\g')
+export SAML_GOOGLE_ENTRY_POINT=
+export SAML_GOOGLE_ISSUER=
 
 ## Enabling Microsoft Azure AD OpenID Connect (demo)
 export AZUREAD_OPENIDCONNECT_IDENTITY_METADATA=
