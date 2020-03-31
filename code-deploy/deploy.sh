@@ -56,7 +56,7 @@ export APP_INIT_DB_SEED_NAME=development
 export AUTH_LOCAL=true
 
 ## Enabling Google OAuth 2.0
-export OATH_GOOGLE_ID=$(aws ssm get-parameters --region us-east-1 --names SBCP_OATH_GOOGLE_ID --with-decryption --query Parameters[0].Value | sed 's\"\\g')
+export OATH_GOOGLE_ID=$(aws ssm get-parameters --region us-east-1 --names SBCP_OAUTH_GOOGLE_ID --with-decryption --query Parameters[0].Value | sed 's\"\\g')
 export OAUTH_GOOGLE_SECRET=$(aws ssm get-parameters --region us-east-1 --names SBCP_OAUTH_GOOGLE_SECRET --with-decryption --query Parameters[0].Value | sed 's\"\\g')
 
 ## Enabling Google SAML
